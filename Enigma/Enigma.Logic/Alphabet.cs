@@ -5,25 +5,25 @@ namespace Enigma.Logic
     /// <summary>
     /// The letters which make up an alphabet.
     /// </summary>
-    public class EnigmaAlphabet
+    public class Alphabet
     {
-        private readonly ImmutableDictionary<char, EnigmaLetter> letterLookup;
+        private readonly ImmutableDictionary<char, AlphabetLetter> letterLookup;
 
-        public EnigmaAlphabet(char[] letters)
+        public Alphabet(char[] letters)
         {
             var lettersArray = letters
-                .Select((l, i) => new EnigmaLetter(this, i, l))
+                .Select((l, i) => new AlphabetLetter(this, i, l))
                 .ToArray();
 
             Letters = ImmutableArray.CreateRange(lettersArray);
             letterLookup = lettersArray
-                .ToImmutableDictionary<EnigmaLetter, char, EnigmaLetter>(l => l.Letter, l => l);
+                .ToImmutableDictionary<AlphabetLetter, char, AlphabetLetter>(l => l.Letter, l => l);
         }
 
         /// <summary>
         /// The letters in the alphabet for this enigma machine.
         /// </summary>
-        public ImmutableArray<EnigmaLetter> Letters { get; }
+        public ImmutableArray<AlphabetLetter> Letters { get; }
 
         /// <summary>
         /// Gets the index of a given letter
@@ -39,13 +39,13 @@ namespace Enigma.Logic
         }
 
         /// <summary>
-        /// Gets an <see cref="EnigmaLetter"/> given its character.
+        /// Gets an <see cref="AlphabetLetter"/> given its character.
         /// </summary>
         /// <param name="letter"></param>
         /// <returns></returns>
-        public EnigmaLetter this[char letter] => letterLookup[letter];
+        public AlphabetLetter this[char letter] => letterLookup[letter];
 
-        public EnigmaLetter this[int index] => Letters[index];
+        public AlphabetLetter this[int index] => Letters[index];
 
         /// <summary>
         /// Gets the number of letters in the alphabet.
