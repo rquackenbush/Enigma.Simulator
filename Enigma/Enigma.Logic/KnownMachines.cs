@@ -1,79 +1,83 @@
-﻿//namespace Enigma.Logic
-//{
-//    public static class KnownMachines
-//    {
-//        public static EnigmaMachine B { get; }
+﻿using Enigma.Logic.Definitions;
 
-//        public static EnigmaMachine D { get; }
+namespace Enigma.Logic
+{
+    public static class KnownMachines
+    {
+        public static MachineDefinition B { get; }
 
-//        public static EnigmaMachine I { get; }
+        public static MachineDefinition D { get; }
 
-//        static KnownMachines()
-//        {
-//            B = new EnigmaMachineDefinition
-//            {
-//                Name = "B",
-//                Alphabet = "ABCDEFGHIJKLMNOPQRSTUVXYZÅÄÖ",
-//                Inputs = new InputDefinition[]
-//                {
-//                    new InputDefinition("ETW", "ABCDEFGHIJKLMNOPQRSTUVXYZÅÄÖ")
-//                },
-//                Rotors = new EnigmaRotorDefinition[]
-//                {
-//                    new EnigmaRotorDefinition("I", "PSBGÖXQJDHOÄUCFRTEZVÅINLYMKA", "G"),
-//                    new EnigmaRotorDefinition("II", "CHNSYÖADMOTRZXBÄIGÅEKQUPFLVJ", "G"),
-//                    new EnigmaRotorDefinition("III", "ÅVQIAÄXRJBÖZSPCFYUNTHDOMEKGL", "G")
-//                },
-//                Reflectors = new ReflectorDefinition[]
-//                {
-//                    new ReflectorDefinition("UKW", "LDGBÄNCPSKJAVFZHXUIÅRMQÖOTEY")
-//                }
-//            }.BuildMachine();
+        public static MachineDefinition I { get; }
 
-//            D = new EnigmaMachineDefinition
-//            {
-//                Name = "D",
-//                Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-//                Inputs = new InputDefinition[]
-//                {
-//                    new InputDefinition("ETW", "QWERTZUIOASDFGHJKPYXCVBNML")
-//                },
-//                Rotors = new EnigmaRotorDefinition[]
-//                {
-//                    new EnigmaRotorDefinition("I", "LPGSZMHAEOQKVXRFYBUTNICJDW", "G"),
-//                    new EnigmaRotorDefinition("II", "SLVGBTFXJQOHEWIRZYAMKPCNDU", "M"),
-//                    new EnigmaRotorDefinition("III", "CJGDPSHKTURAWZXFMYNQOBVLIE", "V"),
-//                },
-//                Reflectors = new ReflectorDefinition[]
-//                {
-//                    new ReflectorDefinition("UKW", "IMETCGFRAYSQBZXWLHKDVUPOJN")
-//                }
-//            }.BuildMachine();
+        static KnownMachines()
+        {
+            B = new MachineDefinition
+            {
+                Name = "B",
+                Alphabet = "ABCDEFGHIJKLMNOPQRSTUVXYZÅÄÖ",
+                Inputs = new InputDefinition[]
+                {
+                    new InputDefinition("ETW", "ABCDEFGHIJKLMNOPQRSTUVXYZÅÄÖ")
+                },
+                Rotors = new RotorDefinition[]
+                {
+                    new RotorDefinition("I", "PSBGÖXQJDHOÄUCFRTEZVÅINLYMKA", "G"),
+                    new RotorDefinition("II", "CHNSYÖADMOTRZXBÄIGÅEKQUPFLVJ", "G"),
+                    new RotorDefinition("III", "ÅVQIAÄXRJBÖZSPCFYUNTHDOMEKGL", "G")
+                },
+                Reflectors = new ReflectorDefinition[]
+                {
+                    new ReflectorDefinition("UKW", "LDGBÄNCPSKJAVFZHXUIÅRMQÖOTEY", false)
+                },
+                HasPlugBoard = false
+            };
 
-//            I = new EnigmaMachineDefinition
-//            {
-//                Name = "I",
-//                Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-//                Inputs = new InputDefinition[]
-//                {
-//                    new InputDefinition("ETW", "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-//                },
-//                Rotors = new EnigmaRotorDefinition[]
-//                {
-//                    new EnigmaRotorDefinition("I", "EKMFLGDQVZNTOWYHXUSPAIBRCJ", "Y"),
-//                    new EnigmaRotorDefinition("II", "AJDKSIRUXBLHWTMCQGZNPYFVOE", "M"),
-//                    new EnigmaRotorDefinition("III", "BDFHJLCPRTXVZNYEIWGAKMUSQO", "D"),
-//                    new EnigmaRotorDefinition("IV", "ESOVPZJAYQUIRHXLNFTGKDCMWB", "R"),
-//                    new EnigmaRotorDefinition("V", "VZBRGITYUPSDNHLXAWMJQOFECK", "H"),
-//                },
-//                Reflectors = new ReflectorDefinition[]
-//                {
-//                    new ReflectorDefinition("UKW-A", "EJMZALYXVBWFCRQUONTSPIKHGD"),
-//                    new ReflectorDefinition("UKW-B", "YRUHQSLDPXNGOKMIEBFZCWVJAT"),
-//                    new ReflectorDefinition("UKW-C", "FVPJIAOYEDRZXWGCTKUQSBNMHL"),
-//                }
+            D = new MachineDefinition
+            {
+                Name = "D",
+                Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                Inputs = new InputDefinition[]
+                {
+                    new InputDefinition("ETW", "QWERTZUIOASDFGHJKPYXCVBNML")
+                },
+                Rotors = new RotorDefinition[]
+                {
+                    new ("I", "LPGSZMHAEOQKVXRFYBUTNICJDW", "G"),
+                    new ("II", "SLVGBTFXJQOHEWIRZYAMKPCNDU", "M"),
+                    new ("III", "CJGDPSHKTURAWZXFMYNQOBVLIE", "V"),
+                },
+                Reflectors = new ReflectorDefinition[]
+                {
+                    new ("UKW", "IMETCGFRAYSQBZXWLHKDVUPOJN", false)
+                },
+                HasPlugBoard = true
+            };
 
-//            }.BuildMachine();
-//        }
-//    }
-//}
+            I = new MachineDefinition
+            {
+                Name = "I",
+                Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                Inputs = new InputDefinition[]
+                {
+                    new InputDefinition("ETW", "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                },
+                Rotors = new RotorDefinition[]
+                {
+                    new ("I", "EKMFLGDQVZNTOWYHXUSPAIBRCJ", "Y"),
+                    new ("II", "AJDKSIRUXBLHWTMCQGZNPYFVOE", "M"),
+                    new ("III", "BDFHJLCPRTXVZNYEIWGAKMUSQO", "D"),
+                    new ("IV", "ESOVPZJAYQUIRHXLNFTGKDCMWB", "R"),
+                    new ("V", "VZBRGITYUPSDNHLXAWMJQOFECK", "H"),
+                },
+                Reflectors = new ReflectorDefinition[]
+                {
+                    new ("UKW-A", "EJMZALYXVBWFCRQUONTSPIKHGD", true),
+                    new ("UKW-B", "YRUHQSLDPXNGOKMIEBFZCWVJAT", true),
+                    new ("UKW-C", "FVPJIAOYEDRZXWGCTKUQSBNMHL", true),
+                }
+
+            };
+        }
+    }
+}
