@@ -1,9 +1,43 @@
-﻿//using Shouldly;
+﻿using Enigma.Logic.Configuration;
 
-//namespace Enigma.Logic.Tests
-//{
-//    public class MessageTests
-//    {
+namespace Enigma.Logic.Tests
+{
+    public class MessageTests
+    {
+        [Fact]
+        public void TuringsTreatise1940()
+        {
+            const string encryptedMessage = "QSZVI DVMPN EXACM RWWXU IYOTY NGVVX DZ";
+            const string expectedDecryptedMessage = "DEUTS QETRU PPENS INDJE TZTIN ENGLA ND";
+
+            var machineConfiguration = new MachineConfiguration
+            {
+                InputName = "ETW",
+                WheelOrder = new string[]
+                {
+                    "III",
+                    "I",
+                    "II"
+                },
+                ReflectorName = "UKW",
+                RingPositions = new int[]
+                {
+                    26,
+                    17,
+                    16,
+                    13
+                }
+            };
+            
+            //MessageKey: JEZA
+            var machine = MachineBuilder.BuildMachine(KnownMachines.K, machineConfiguration);
+
+            var decryptedMessage = machine.TypeMessage(encryptedMessage.Replace(" ", ""));
+
+            decryptedMessage.ShouldBe(expectedDecryptedMessage.Replace(" ", ""));
+        }
+    }
+}
 //        [Fact]
 //        public void Message1()
 //        {

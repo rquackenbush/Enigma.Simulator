@@ -17,7 +17,7 @@ namespace Enigma.Logic
 
             Letters = ImmutableArray.CreateRange(lettersArray);
             letterLookup = lettersArray
-                .ToImmutableDictionary<AlphabetLetter, char, AlphabetLetter>(l => l.Letter, l => l);
+                .ToImmutableDictionary(l => l.Letter, l => l);
         }
 
         /// <summary>
@@ -45,6 +45,11 @@ namespace Enigma.Logic
         /// <returns></returns>
         public AlphabetLetter this[char letter] => letterLookup[letter];
 
+        /// <summary>
+        /// Gets an <see cref="AlphabetLetter"/> given its index.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public AlphabetLetter this[int index] => Letters[index];
 
         /// <summary>

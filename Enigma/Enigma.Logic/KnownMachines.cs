@@ -10,6 +10,8 @@ namespace Enigma.Logic
 
         public static MachineDefinition I { get; }
 
+        public static MachineDefinition K { get; }
+
         static KnownMachines()
         {
             B = new MachineDefinition
@@ -30,6 +32,7 @@ namespace Enigma.Logic
                 {
                     new ReflectorDefinition("UKW", "LDGBÄNCPSKJAVFZHXUIÅRMQÖOTEY", false)
                 },
+                SlotCount = 3,
                 HasPlugBoard = false
             };
 
@@ -51,7 +54,8 @@ namespace Enigma.Logic
                 {
                     new ("UKW", "IMETCGFRAYSQBZXWLHKDVUPOJN", false)
                 },
-                HasPlugBoard = true
+                SlotCount = 3,
+                HasPlugBoard = false
             };
 
             I = new MachineDefinition
@@ -75,8 +79,31 @@ namespace Enigma.Logic
                     new ("UKW-A", "EJMZALYXVBWFCRQUONTSPIKHGD", true),
                     new ("UKW-B", "YRUHQSLDPXNGOKMIEBFZCWVJAT", true),
                     new ("UKW-C", "FVPJIAOYEDRZXWGCTKUQSBNMHL", true),
-                }
+                },
+                SlotCount = 3,
+                HasPlugBoard = true
+            };
 
+            K = new MachineDefinition
+            {
+                Name = "K",
+                Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                Inputs = new InputDefinition[]
+                {
+                    new ("ETW", "QWERTZUIOASDFGHJKPYXCVBNML")
+                },
+                Rotors = new RotorDefinition[]
+                {
+                    new ("I", "LPGSZMHAEOQKVXRFYBUTNICJDW", "G"),
+                    new ("II", "SLVGBTFXJQOHEWIRZYAMKPCNDU", "M"),
+                    new ("III", "CJGDPSHKTURAWZXFMYNQOBVLIE", "V"),
+                },
+                Reflectors = new ReflectorDefinition[]
+                {
+                    new ("UKW", "IMETCGFRAYSQBZXWLHKDVUPOJN", false)
+                },
+                SlotCount = 3,
+                HasPlugBoard = false
             };
         }
     }
