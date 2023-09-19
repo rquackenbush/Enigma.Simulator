@@ -5,7 +5,7 @@ namespace Enigma.Logic
     /// <summary>
     /// 
     /// </summary>
-    public abstract class CrossConnector
+    public abstract class CrossConnector : IConnectionMapper
     {
         private readonly ImmutableArray<int> forward;
         private readonly ImmutableArray<int> reverse;

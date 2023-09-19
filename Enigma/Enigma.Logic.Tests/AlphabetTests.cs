@@ -21,18 +21,5 @@ namespace Enigma.Logic.Tests
 
             alphabet.IndexOf(letter).ShouldBe(expectedIndex);
         }
-
-        [Theory]
-        [InlineData("ABC", 0, 0)]
-        [InlineData("ABC", 1, 1)]
-        [InlineData("ABC", 2, 2)]
-        [InlineData("ABC", 3, 0)]
-        [InlineData("ABC", 4, 1)]
-        public void NormalizeTest(string letters, int index, int expectedNormalizedIndex)
-        {
-            var alphabet = MachineBuilder.BuildAlphabet(letters);
-
-            alphabet.NormalizeIndex(index).ShouldBe(expectedNormalizedIndex);
-        }
     }
 }

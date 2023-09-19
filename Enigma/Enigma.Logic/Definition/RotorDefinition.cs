@@ -2,19 +2,17 @@
 {
     public class RotorDefinition
     {
-        public RotorDefinition() { }
-
-        public RotorDefinition(string? name, string? connections, string? notches)
+        public RotorDefinition(string name, string connections, string notches)
         {
             Name = name;
             Connections = connections;
             Notches = notches;
         }
 
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
-        public string? Connections { get; set; }
+        public string Connections { get; set; }
 
-        public string? Notches { get; set; }
+        public string Notches { get; set; }
     }
 }

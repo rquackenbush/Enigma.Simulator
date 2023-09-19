@@ -5,15 +5,12 @@
     /// </summary>
     public abstract class WheelBase
     { 
-        public WheelBase(Alphabet alphabet, RotorCore core, int ringSettingIndex, int initialPositionIndex)
+        public WheelBase(RotorCore core, int ringSettingIndex, int initialPositionIndex)
         {
-            Alphabet = alphabet;
             Core = core ?? throw new ArgumentNullException(nameof(core));
             RingSettingIndex = ringSettingIndex;
             PositionIndex = initialPositionIndex;
         }
-
-        public Alphabet Alphabet { get; }
 
         public RotorCore Core { get; }
 
@@ -21,21 +18,16 @@
 
         public int PositionIndex { get; protected set; }
 
-        protected int GetEffectiveCoreIndex()
-        {
-            return Alphabet.NormalizeIndex(PositionIndex + RingSettingIndex);
-        }
-
         public int MapForward(int inputIndex)
         {
-            var effectiveCoreIndex = GetEffectiveCoreIndex();
+            var effectiveCoreIndex = (PositionIndex + RingSettingIndex + inputIndex) % Core.Count;
 
             return Core.MapForward(effectiveCoreIndex);
         }
 
         public virtual int MapReverse(int outputIndex)
         {
-            var effectiveCoreIndex = GetEffectiveCoreIndex();
+            var effectiveCoreIndex = (PositionIndex + RingSettingIndex + outputIndex) % Core.Count;
 
             return Core.MapReverse(effectiveCoreIndex);
         }

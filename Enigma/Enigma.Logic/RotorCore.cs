@@ -6,7 +6,7 @@
     public class RotorCore : CrossConnector
     {
         public RotorCore(CrossConnection[] connections) 
-            : base(connections, false)
+            : base(connections, true)
         {
         }
     }

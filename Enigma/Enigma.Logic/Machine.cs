@@ -2,18 +2,35 @@
 {
     public class Machine
     {
-        public Machine(Alphabet alphabet, InputWheel input, RotorWheel[] rotors, Reflector reflector, Plugboard? plugboard)
+        private readonly IConnectionMapper[] connectionMappers;
+
+        public Machine(Alphabet alphabet, InputWheel? input, RotorWheel[] rotors, Reflector reflector, Plugboard? plugboard)
         {
             Alphabet = alphabet ?? throw new ArgumentNullException(nameof(alphabet));
-            Input = input ?? throw new ArgumentNullException(nameof(input));
+            Input = input;
             Rotors = rotors ?? throw new ArgumentNullException(nameof(rotors));
             Reflector = reflector ?? throw new ArgumentNullException(nameof(reflector));
             Plugboard = plugboard;
+
+            var temp = new List<IConnectionMapper>();
+
+            if (plugboard != null)
+                temp.Add(plugboard);
+
+            if (input != null)
+                temp.Add(input);
+
+            foreach(var rotor in rotors.Reverse())
+            {
+                temp.Add(rotor);
+            }
+
+            connectionMappers = temp.ToArray();
         }
 
         public Alphabet Alphabet { get; }
 
-        public InputWheel Input { get; }
+        public InputWheel? Input { get; }
 
         public RotorWheel[] Rotors { get; }
 
@@ -26,7 +43,7 @@
             //Move wheels
             bool advanceNext = true;
 
-            for (var rotorIndex = 0; rotorIndex < Rotors.Length; rotorIndex++)
+            for (var rotorIndex = Rotors.Length - 1; rotorIndex >= 0; rotorIndex--)
             {
                 if (advanceNext)
                 {
@@ -47,38 +64,17 @@
             //This will carry the current connection index throughout the process.
             var currentIndex = Alphabet.IndexOf(inputLetter);
 
-            //Plugboard in
-            if (Plugboard != null)
+            for(var index = 0; index < connectionMappers.Length; index++)
             {
-                currentIndex = Plugboard.MapForward(currentIndex);
+                currentIndex = connectionMappers[index].MapForward(currentIndex);
             }
 
-            //Input
-            currentIndex = Input.MapForward(currentIndex);
-
-            //Rotors
-            for (var rotorIndex = 0; rotorIndex < Rotors.Length; rotorIndex++)
-            {
-                currentIndex = Rotors[rotorIndex].MapForward(currentIndex);
-            }
-
-            //Reflector
             currentIndex = Reflector.MapForward(currentIndex);
 
-            //Rotors
-            for (var rotorIndex = Rotors.Length - 1; rotorIndex > 0; rotorIndex--)
+            for (var index = connectionMappers.Length - 1; index >= 0; index--)
             {
-                currentIndex = Rotors[rotorIndex].MapReverse(currentIndex);
+                currentIndex = connectionMappers[index].MapReverse(currentIndex);
             }
-
-            //Input
-            currentIndex = Input.MapReverse(currentIndex);
-
-            if (Plugboard != null)
-            {
-                currentIndex = Plugboard.MapReverse(currentIndex);
-            }
-
 
             return Alphabet[currentIndex].Letter;     
         }

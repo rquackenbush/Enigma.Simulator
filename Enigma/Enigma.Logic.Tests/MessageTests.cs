@@ -1,40 +1,66 @@
 ﻿using Enigma.Logic.Configuration;
+using Enigma.Logic.Definitions;
 
 namespace Enigma.Logic.Tests
 {
     public class MessageTests
     {
-        [Fact]
-        public void TuringsTreatise1940()
+        private void Crypt(MachineDefinition machineDefnition, MachineConfiguration machineConfiguration, string input, string expectedOutput)
         {
-            const string encryptedMessage = "QSZVI DVMPN EXACM RWWXU IYOTY NGVVX DZ";
-            const string expectedDecryptedMessage = "DEUTS QETRU PPENS INDJE TZTIN ENGLA ND";
+            var machine = MachineBuilder.BuildMachine(machineDefnition, machineConfiguration);
 
-            var machineConfiguration = new MachineConfiguration
+            var decryptedMessage = machine.TypeMessage(input.Replace(" ", ""));
+
+            decryptedMessage.ShouldBe(expectedOutput.Replace(" ", ""));
+        }
+
+        //[Fact]
+        //public void TuringsTreatise1940()
+        //{
+        //    const string encryptedMessage = "QSZVI DVMPN EXACM RWWXU IYOTY NGVVX DZ";
+        //    const string expectedDecryptedMessage = "DEUTS QETRU PPENS INDJE TZTIN ENGLA ND";
+
+        //    var machineConfiguration = new MachineConfiguration
+        //    {
+        //        InputName = "ETW",
+        //        WheelOrder = new string[]
+        //        {
+        //            "III",
+        //            "I",
+        //            "II"
+        //        },
+        //        ReflectorName = "UKW",
+        //        RingPositions = new int[]
+        //        {
+        //            26,
+        //            17,
+        //            16,
+        //            13
+        //        }
+        //    };
+
+        //    //MessageKey: JEZA
+        //    Crypt(KnownMachines.K, machineConfiguration, encryptedMessage, expectedDecryptedMessage); 
+        //}
+
+        [Theory]
+        [InlineData('P', 'G')]
+        [InlineData('G', 'P')]
+        public void Example(char typeLetter, char expected)
+        {
+            // https://www.codesandciphers.org.uk/enigma/example1.htm
+            var configuration = new MachineConfiguration
             {
-                InputName = "ETW",
-                WheelOrder = new string[]
-                {
-                    "III",
-                    "I",
-                    "II"
-                },
-                ReflectorName = "UKW",
-                RingPositions = new int[]
-                {
-                    26,
-                    17,
-                    16,
-                    13
-                }
+                WheelOrder = new string[] { "I", "II", "III" },
+                RingSettings = new int[] { 1, 1, 1 },
+                RingPositions = "AAZ",
+                ReflectorName = "UKW-B",
+                
             };
-            
-            //MessageKey: JEZA
-            var machine = MachineBuilder.BuildMachine(KnownMachines.K, machineConfiguration);
 
-            var decryptedMessage = machine.TypeMessage(encryptedMessage.Replace(" ", ""));
+            var machine = MachineBuilder.BuildMachine(KnownMachines.I, configuration);
 
-            decryptedMessage.ShouldBe(expectedDecryptedMessage.Replace(" ", ""));
+            machine.TypeLetter(typeLetter).ShouldBe(expected);
         }
     }
 }

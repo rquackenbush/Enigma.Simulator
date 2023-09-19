@@ -2,15 +2,16 @@
 {
     public static class AlphabetExtensions
     {
-        /// <summary>
-        /// Normalizes the index of a rotor to an actual position on the rotor.
-        /// </summary>
-        /// <param name="alphabet"></param>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public static int NormalizeIndex(this Alphabet alphabet, int index)
+        public static int[] GetIndicies(this Alphabet alphabet, string letters)
         {
-            return index % alphabet.Count;
+            var result = new int[letters.Length];
+
+            for(var index = 0; index < result.Length; index++)
+            {
+                result[index] = alphabet.IndexOf(letters[index]);
+            }
+
+            return result;
         }
     }
 }

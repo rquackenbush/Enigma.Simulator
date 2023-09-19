@@ -1,11 +1,11 @@
 ﻿namespace Enigma.Logic
 {
-    public class RotorWheel : WheelBase
+    public class RotorWheel : WheelBase, IConnectionMapper
     {
         private readonly HashSet<int> notchIndicies;
 
-        public RotorWheel(Alphabet alphabet, RotorCore core, int ringSettingIndex, int initialPositionIndex, int[] notchIndicies) 
-            : base(alphabet, core, ringSettingIndex, initialPositionIndex)
+        public RotorWheel(RotorCore core, int ringSettingIndex, int initialPositionIndex, int[] notchIndicies) 
+            : base(core, ringSettingIndex, initialPositionIndex)
         {
             this.notchIndicies = notchIndicies.ToHashSet();
         }
@@ -18,7 +18,7 @@
         {
             var positionIndexBeforeAdvance = PositionIndex;
 
-            PositionIndex = Alphabet.NormalizeIndex(PositionIndex + 1);
+            PositionIndex = (PositionIndex + 1) % Core.Count;
 
             return notchIndicies.Contains(positionIndexBeforeAdvance);
         }
