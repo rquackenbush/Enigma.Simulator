@@ -9,10 +9,10 @@
         public void MapForwardShouldWork(string alphabetDefinition, string connectionDefinitions, char inLetter, char outLetter)
         {
             // Build the alphabet
-            var alphabet = MachineBuilder.BuildAlphabet(alphabetDefinition);
+            var alphabet = EnigmaBuilder.BuildAlphabet(alphabetDefinition);
 
             // Build the rotorcore
-            var rotorCore = MachineBuilder.BuildRotorCore(alphabet, connectionDefinitions);
+            var rotorCore = EnigmaBuilder.BuildRotorCore(alphabet, connectionDefinitions);
 
             // Get the index of the input letter
             var inputIndex = alphabet.IndexOf(inLetter);
@@ -31,10 +31,10 @@
         public void MapReverseShouldWork(string alphabetDefinition, string connectionDefinitions, char outLetter, char inLetter)
         {
             // Build the alphabet
-            var alphabet = MachineBuilder.BuildAlphabet(alphabetDefinition);
+            var alphabet = EnigmaBuilder.BuildAlphabet(alphabetDefinition);
 
             // Build the rotorcore
-            var rotorCore = MachineBuilder.BuildRotorCore(alphabet, connectionDefinitions);
+            var rotorCore = EnigmaBuilder.BuildRotorCore(alphabet, connectionDefinitions);
 
             // Get the index of the input letter
             var outputIndex = alphabet.IndexOf(outLetter);

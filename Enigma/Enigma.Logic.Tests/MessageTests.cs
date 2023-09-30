@@ -7,7 +7,7 @@ namespace Enigma.Logic.Tests
     {
         private void Crypt(MachineDefinition machineDefnition, MachineConfiguration machineConfiguration, string input, string expectedOutput)
         {
-            var machine = MachineBuilder.BuildMachine(machineDefnition, machineConfiguration);
+            var machine = EnigmaBuilder.BuildMachine(machineDefnition, machineConfiguration);
 
             var decryptedMessage = machine.TypeMessage(input.Replace(" ", ""));
 
@@ -58,7 +58,7 @@ namespace Enigma.Logic.Tests
                 
             };
 
-            var machine = MachineBuilder.BuildMachine(KnownMachines.I, configuration);
+            var machine = EnigmaBuilder.BuildMachine(KnownMachines.I, configuration);
 
             machine.TypeLetter(typeLetter).ShouldBe(expected);
         }

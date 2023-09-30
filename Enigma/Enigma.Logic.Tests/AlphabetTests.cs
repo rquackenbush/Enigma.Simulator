@@ -17,7 +17,7 @@ namespace Enigma.Logic.Tests
         [InlineData("abcdef", 'c', 2)]
         public void IndexOfTest(string letters, char letter, int expectedIndex)
         {
-            var alphabet = MachineBuilder.BuildAlphabet(letters);
+            var alphabet = EnigmaBuilder.BuildAlphabet(letters);
 
             alphabet.IndexOf(letter).ShouldBe(expectedIndex);
         }

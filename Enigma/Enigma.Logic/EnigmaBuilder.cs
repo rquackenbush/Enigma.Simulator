@@ -1,275 +1,156 @@
-﻿//using System.Xml.Linq;
+﻿using Enigma.Logic.Configuration;
+using Enigma.Logic.Definitions;
 
-//namespace Enigma.Logic
-//{
-//    public static class EnigmaBuilder
-//    {
-//        public static Alphabet BuildAlphabet(string letters)
-//        {
-//            return  new Alphabet(letters.ToArray());
-//        }
+namespace Enigma.Logic
+{
+    public static class EnigmaBuilder
+    {
+        /// <summary>
+        /// Builds an alphabet from a string of letters.
+        /// </summary>
+        /// <param name="letters">The letters of the alphabet. These letters must be unique.</param>
+        /// <returns></returns>
+        public static Alphabet BuildAlphabet(string letters)
+        {
+            return new Alphabet(letters.ToArray());
+        }
 
-//        public static Rotor BuildRotor(Alphabet alphabet, EnigmaRotorDefinition rotorDefintion)
-//        {
-//            return BuildRotor(alphabet, rotorDefintion.Name, rotorDefintion.Connections, rotorDefintion.Notches);
-//        }
+        public static RotorCore BuildRotorCore(Alphabet alphabet, string connections)
+        {
+            var connectionLetters = connections.ToArray();
 
-//        public static Rotor BuildRotor(Alphabet alphabet, string name, string connections, string notches)
-//        {
-//            var connectionLetters = connections.ToArray();
+            if (connectionLetters.Length != alphabet.Count)
+                throw new ArgumentException($"connections had {connectionLetters.Length} elements but the alphabet had {alphabet.Count} letters. They must match.");
 
-//            if (connectionLetters.Length != alphabet.Count)
-//                throw new ArgumentException($"connections had {connectionLetters.Length} elements but the alphabet had {alphabet.Count} letters. They must match.");
+            var rotorCoreConnections = new CrossConnection[connections.Length];
 
-//            var notchIndicies = new HashSet<int>();
+            var positionIndex = 0;
 
-//            foreach(var notch in notches)
-//            {
-//                notchIndicies.Add(alphabet.IndexOf(notch));
-//            }
+            foreach (var connection in connections)
+            {
+                var outputIndex = alphabet.IndexOf(connection);
 
-//            var positions = new RotorPosition[connections.Length];
+                var rotorCoreConnection = new CrossConnection(positionIndex, outputIndex);
 
-//            var positionIndex = 0;
+                rotorCoreConnections[positionIndex] = rotorCoreConnection;
 
-//            foreach(var connection in connections)
-//            {
-//                var outputIndex = alphabet.IndexOf(connection);
+                positionIndex++;
+            }
 
-//                var position = new RotorPosition(alphabet[positionIndex], outputIndex, notchIndicies.Contains(positionIndex));
+            return new RotorCore(rotorCoreConnections);
+        }
 
-//                positions[positionIndex] = position;
+        /// <summary>
+        /// Build a configured plugboard.
+        /// </summary>
+        /// <param name="alphabet"></param>
+        /// <param name="connections">A string in the format of 'AB CD'</param>
+        /// <returns></returns>
+        public static Plugboard BuildPlugboard(Alphabet alphabet, string connections)
+        {
+            if (alphabet is null)
+                throw new ArgumentNullException(nameof(alphabet));
 
-//                positionIndex++;
-//            }
+            connections ??= string.Empty;
 
-//            return new Rotor(name, positions);
-//        }
+            var pairs = connections.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
-//        public static Rotor[] BuildRotors(Alphabet alphabet, EnigmaRotorDefinition[] rotorDefinitions)
-//        {
-//            var rotors = new Rotor[rotorDefinitions.Length];
+            //First, create a list of all the "default" connections (where no wire is connected and the plugboard just passed through the letter).
+            var directConnections = Enumerable.Range(0, alphabet.Count).ToHashSet();
 
-//            for(var rotorIndex = 0; rotorIndex < rotorDefinitions.Length; rotorIndex++)
-//            {
-//                rotors[rotorIndex] = BuildRotor(alphabet, rotorDefinitions[rotorIndex]);
-//            }
+            var crossConnections = new List<CrossConnection>(alphabet.Count);
 
-//            return rotors;
-//        }
+            foreach (var pair in pairs)
+            {
+                if (pair.Length != 2)
+                    throw new ArgumentException($"Plugboard pair '{pair}' did not contain 2 connections.");
 
-//        public static Input BuildETW(Alphabet alphabet, InputDefinition enigmaETWDefinition)
-//        {
-//            return BuildETW(alphabet, enigmaETWDefinition.Name, enigmaETWDefinition.Connections);
-//        }
+                var sourceLetter = pair[0];
+                var targetLetter = pair[1];
 
-//        public static Input BuildETW(Alphabet alphabet, string name, string connections)
-//        {
-//            var connectionLetters = connections.ToArray();
+                if (sourceLetter == targetLetter)
+                    throw new ApplicationException($"A plugboard connection cannot map to itself: '{sourceLetter}'");
 
-//            if (connectionLetters.Length != alphabet.Count)
-//                throw new ArgumentException($"connections had {connectionLetters.Length} elements but the alphabet had {alphabet.Count} letters. They must match.");
+                var sourceLetterIndex = alphabet.IndexOf(sourceLetter);
+                var targetLetterIndex = alphabet.IndexOf(targetLetter);
 
-//            var positions = new RotorPosition[connections.Length];
+                if (!directConnections.Contains(sourceLetterIndex))
+                    throw new ApplicationException($"Source letter '{sourceLetter}' has already been connected.");
 
-//            var positionIndex = 0;
+                if (!directConnections.Contains(targetLetterIndex))
+                    throw new ApplicationException($"Target letter '{targetLetterIndex}' has already been connected.");
 
-//            foreach (var connection in connections)
-//            {
-//                var outputIndex = alphabet.IndexOf(connection);
+                crossConnections.Add(new CrossConnection(sourceLetterIndex, targetLetterIndex));
+                crossConnections.Add(new CrossConnection(targetLetterIndex, sourceLetterIndex));
 
-//                var position = new RotorPosition(alphabet[positionIndex], outputIndex, false);
+                //These direct connections are no longer valid.
+                directConnections.Remove(sourceLetterIndex);
+                directConnections.Remove(targetLetterIndex);
+            }
 
-//                positions[positionIndex] = position;
+            foreach(var directionConnection in directConnections)
+            {
+                crossConnections.Add(new CrossConnection(directionConnection, directionConnection));
+            }
 
-//                positionIndex++;
-//            }
+            return new Plugboard(crossConnections.ToArray());
+        }
 
-//            return new Input(name, positions);
-//        }
+        public static Machine BuildMachine(MachineDefinition machineDefinition, MachineConfiguration machineConfiguration)
+        {
+            var alphabet = BuildAlphabet(machineDefinition.Alphabet);
 
-//        public static Input[] BuildETWs(Alphabet alphabet, InputDefinition[] definitions)
-//        {
-//            var rotors = new Input[definitions.Length];
+            if (machineConfiguration.WheelOrder.Length != machineDefinition.SlotCount)
+                throw new InvalidOperationException($"The machine has {machineDefinition.SlotCount} slots but the configuration had {machineConfiguration.WheelOrder.Length} wheels.");
 
-//            for (var rotorIndex = 0; rotorIndex < definitions.Length; rotorIndex++)
-//            {
-//                rotors[rotorIndex] = BuildETW(alphabet, definitions[rotorIndex]);
-//            }
+            InputWheel? input = null;
 
-//            return rotors;
-//        }
+            if (!string.IsNullOrWhiteSpace(machineConfiguration.InputName))
+            {
+                var inputDefinition = machineDefinition.Inputs
+              .FirstOrDefault(i => string.CompareOrdinal(i.Name, machineConfiguration.InputName) == 0);
 
-//        public static Reflector BuildUKW(Alphabet alphabet, string name, string connections)
-//        {
-//            var connectionLetters = connections.ToArray();
+                if (inputDefinition == null)
+                    throw new InvalidOperationException($"Unable to find input wheel named '{machineConfiguration.InputName}'.");
 
-//            if (connectionLetters.Length != alphabet.Count)
-//                throw new ArgumentException($"connections had {connectionLetters.Length} elements but the alphabet had {alphabet.Count} letters. They must match.");
+                input = new InputWheel(BuildRotorCore(alphabet, inputDefinition.Connections));
+            }
 
-//            var positions = new RotorPosition[connections.Length];
+            var reflectorDefinition = machineDefinition.Reflectors
+                .FirstOrDefault(r => string.CompareOrdinal(r.Name, machineConfiguration.ReflectorName) == 0);
 
-//            var positionIndex = 0;
+            if (reflectorDefinition == null)
+                throw new InvalidOperationException($"Unable to find reflector wheel named '{machineConfiguration.ReflectorName}'.");
 
-//            foreach (var connection in connections)
-//            {
-//                var outputIndex = alphabet.IndexOf(connection);
+            //TODO: Get the optional ring setting for the reflector
+            var reflector = new Reflector(BuildRotorCore(alphabet, reflectorDefinition.Connections), 0);
 
-//                var position = new RotorPosition(alphabet[positionIndex], outputIndex, false);
+            var rotors = new RotorWheel[machineDefinition.SlotCount];
 
-//                positions[positionIndex] = position;
+            for(var index = 0; index < rotors.Length; index++)
+            {
+                var rotorName = machineConfiguration.WheelOrder[index];
 
-//                positionIndex++;
-//            }
+                var rotorDefinition = machineDefinition.Rotors
+                    .FirstOrDefault(r => string.CompareOrdinal(r.Name, rotorName) == 0);
 
-//            return new Reflector(name, positions);
-//        }
+                if (rotorDefinition == null)
+                    throw new InvalidOperationException($"Unable to find wheel '{rotorName}'.");
 
-//        public static Reflector BuildUKW(Alphabet alphabet, ReflectorDefinition enigmaETWDefinition)
-//        {
-//            return BuildUKW(alphabet, enigmaETWDefinition.Name, enigmaETWDefinition.Connections);
-//        }
+                var core = BuildRotorCore(alphabet, rotorDefinition.Connections);
 
-//        public static Reflector[] BuildUKWs(Alphabet alphabet, ReflectorDefinition[] definitions)
-//        {
-//            var rotors = new Reflector[definitions.Length];
+                var ringPositionIndex = alphabet.IndexOf(machineConfiguration.RingPositions[index]);
 
-//            for (var rotorIndex = 0; rotorIndex < definitions.Length; rotorIndex++)
-//            {
-//                rotors[rotorIndex] = BuildUKW(alphabet, definitions[rotorIndex]);
-//            }
+                var notchIndicies = alphabet.GetIndicies(rotorDefinition.Notches);
 
-//            return rotors;
-//        }
+                rotors[index] = new RotorWheel(
+                    core, 
+                    machineConfiguration.RingSettings[index] - 1, ringPositionIndex,
+                    notchIndicies);
+  
+            }
 
-//        public static int GetRotorPosition(Alphabet alphabet, char letter)
-//        {
-//            return alphabet.IndexOf(letter);
-//        }
-
-//        public static int[] GetRotorPositions(Alphabet alphabet, string rotorPositions)
-//        {
-//            var positions = new int[rotorPositions.Length];
-
-//            for(int index = 0; index < rotorPositions.Length; index++)
-//            {
-//                positions[index] = GetRotorPosition(alphabet, rotorPositions[index]);
-//            }
-
-//            return positions;
-//        }
-
-//        //private static EnigmaRotor[] GetRotors(EnigmaRotor[] rotors, string[] names)
-//        //{
-//        //    var toReturn = new EnigmaRotor[names.Length];
-
-//        //    for(var index = 0; index < names.Length; index++)
-//        //    {
-//        //        var rotor = rotors.FirstOrDefault(r => r.Name == names[index]);
-
-//        //        if (rotor == null)
-//        //            throw new Exception($"Unable to find rotor with name '${names[index]}'");
-
-//        //        toReturn[index] = rotor;
-//        //    }
-
-//        //    return toReturn;
-//        //}
-
-//        public static EnigmaMachine BuildMachine(this EnigmaMachineDefinition machineDefinition)
-//        {
-//            if (machineDefinition.Name == null)
-//                throw new Exception("The machine ");
-
-//            if (machineDefinition.Alphabet == null)
-//                throw new Exception("Alphatbet was null");
-
-//            if (machineDefinition.Rotors == null)
-//                throw new Exception("Rotors was null.");
-
-//            if (machineDefinition.Inputs == null)
-//                throw new Exception("ETWs was null");
-
-//            if (machineDefinition.Reflectors == null)
-//                throw new Exception("UKWs was null");
-
-//            //if (machineDefinition.InitialRotorPositions == null)
-//            //    throw new Exception("Initial Rotor Positions was null.");
-
-//            //if (machineDefinition.RotorNames == null)
-//            //    throw new Exception("RoterNames was null. Please specify the roters to be installed into the machine.");
-
-//            var alphabet = BuildAlphabet(machineDefinition.Alphabet);
-
-//            var etws = BuildETWs(alphabet, machineDefinition.Inputs);
-
-//            var allRotors = BuildRotors(alphabet, machineDefinition.Rotors);
-
-//            var ukws = BuildUKWs(alphabet, machineDefinition.Reflectors);
-
-//            //var rotorPositions = GetRotorPositions(alphabet, machineDefinition.InitialRotorPositions);
-
-//            return new EnigmaMachine(machineDefinition.Name, alphabet, etws, allRotors, ukws);
-//        }
-
-//        public static EnigmaMachineInstance BuildMachineInstance(this EnigmaMachineInstanceDefinition machineInstanceDefinition)
-//        {
-//            if (machineInstanceDefinition.Machine == null)
-//                throw new Exception("No machine was provided.");
-
-//            if (machineInstanceDefinition.InputName == null)
-//                throw new Exception("No ETWName was provided.");
-
-//            if (machineInstanceDefinition.ReflectorName == null)
-//                throw new Exception("No UKWName was provided.");
-
-//            if (machineInstanceDefinition.Machine.ETWs == null)
-//                throw new Exception("No ETWs were provided.");
-
-//            if (machineInstanceDefinition.Machine.UKWs == null)
-//                throw new Exception("No UKWs were provided.");
-
-//            if (machineInstanceDefinition.RotorNames == null)
-//                throw new Exception("No RotorNames were provided.");
-
-//            if (machineInstanceDefinition.Machine.Rotors == null)
-//                throw new Exception("No rotors were provided.");
-
-//            if (machineInstanceDefinition.InitialRotorPositions == null)
-//                throw new Exception("The InitialRotorPositions propety was null and that's bullshit.");
-
-//            if (machineInstanceDefinition.InitialRotorPositions.Length != machineInstanceDefinition.RotorNames.Length)
-//                throw new Exception("The number of intial rotor positions was not equal to the number of rotor names.");
-
-//            //Get the input
-//            var etw = machineInstanceDefinition.Machine.ETWs
-//                .First(e => e.Name == machineInstanceDefinition.InputName);
-
-//            //Get the reflector
-//            var ukw = machineInstanceDefinition.Machine.UKWs
-//                .First(u => u.Name == machineInstanceDefinition.ReflectorName);
-
-//            //Get the rotors
-//            var rotors = new Rotor[machineInstanceDefinition.RotorNames.Length];
-
-//            for(var rotorIndex = 0; rotorIndex < machineInstanceDefinition.RotorNames.Length; rotorIndex++)
-//            {
-//                rotors[rotorIndex] = machineInstanceDefinition.Machine.Rotors
-//                    .First(r => r.Name == machineInstanceDefinition.RotorNames[rotorIndex]);
-//            }
-
-//            //var initialRotorIndicies = new int[machineInstanceDefinition.InitialRotorPositions.Length];
-
-//            //for(var rotorNameIndex = 0; rotorNameIndex < machineInstanceDefinition.RotorNames.Length; rotorNameIndex++)
-//            //{
-//            //    initialRotorIndicies[rotorNameIndex] = machineInstanceDefinition.Machine.Alphabet.IndexOf(machineInstanceDefinition.InitialRotorPositions[rotorNameIndex]);
-//            //}
-
-//            var initialRotorIndicies = machineInstanceDefinition.InitialRotorPositions
-//                .Select(i => i - 1)
-//                .ToArray();
-
-//            return new EnigmaMachineInstance(machineInstanceDefinition.Machine, etw, rotors, ukw, initialRotorIndicies);
-//        }
-//    }
-//}
+            return new Machine(alphabet, input, rotors, reflector, null);
+        }
+    }
+}
