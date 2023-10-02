@@ -1,114 +1,124 @@
-﻿using Enigma.Logic.Configuration;
-using Enigma.Logic.Definitions;
+﻿using Enigma.Logic.Definitions;
+using Xunit.Abstractions;
 
 namespace Enigma.Logic.Tests
 {
     public class MessageTests
     {
-        private void Crypt(MachineDefinition machineDefnition, MachineConfiguration machineConfiguration, string input, string expectedOutput)
+        private ITestOutputHelper output;
+
+        public MessageTests(ITestOutputHelper output)
         {
-            var machine = EnigmaBuilder.BuildMachine(machineDefnition, machineConfiguration);
-
-            var decryptedMessage = machine.TypeMessage(input.Replace(" ", ""));
-
-            decryptedMessage.ShouldBe(expectedOutput.Replace(" ", ""));
+            this.output = output;
         }
 
-        //[Fact]
-        //public void TuringsTreatise1940()
-        //{
-        //    const string encryptedMessage = "QSZVI DVMPN EXACM RWWXU IYOTY NGVVX DZ";
-        //    const string expectedDecryptedMessage = "DEUTS QETRU PPENS INDJE TZTIN ENGLA ND";
+        private void Crypt(MachineDefinition machineDefnition, MachineConfiguration machineConfiguration, string input, string output)
+        {
+            input = input.Replace(" ", "");
+            output = output.Replace(" ", "");
 
-        //    var machineConfiguration = new MachineConfiguration
-        //    {
-        //        InputName = "ETW",
-        //        WheelOrder = new string[]
-        //        {
-        //            "III",
-        //            "I",
-        //            "II"
-        //        },
-        //        ReflectorName = "UKW",
-        //        RingPositions = new int[]
-        //        {
-        //            26,
-        //            17,
-        //            16,
-        //            13
-        //        }
-        //    };
+            input.Length.ShouldBe(output.Length);
 
-        //    //MessageKey: JEZA
-        //    Crypt(KnownMachines.K, machineConfiguration, encryptedMessage, expectedDecryptedMessage); 
-        //}
+            //Forward
+            {
+                var machine = EnigmaBuilder.BuildMachine(machineDefnition, machineConfiguration);
+
+                var decryptedMessage = machine.TypeMessage(input);
+
+                decryptedMessage.ShouldBe(output);
+            }
+
+            //Reverse
+            {
+                var machine = EnigmaBuilder.BuildMachine(machineDefnition, machineConfiguration);
+
+                var decryptedMessage = machine.TypeMessage(output);
+
+                decryptedMessage.ShouldBe(input);
+            }
+        }
+
+        [Fact]
+        public void TuringsTreatise1940()
+        {
+            /*
+            
+            http://wiki.franklinheath.co.uk/index.php/Enigma/Sample_Messages
+            
+            Machine Settings for Enigma K Railway
+            Wheel order:     III I II
+            Ring positions:  26 17 16 13
+            Message key:     JEZA
+            
+             */
+
+            const string encryptedMessage = "QSZVI DVMPN EXACM RWWXU IYOTY NGVVX DZ";
+            const string decryptedMessage = "DEUTS QETRU PPENS INDJE TZTIN ENGLA ND";
+
+            var machineconfiguration = new MachineConfiguration
+            {
+                InputName = "ETW",
+                WheelOrder = new string[]
+                {
+                    "III",
+                    "I",
+                    "II"
+                },
+                ReflectorName = "UKW",
+
+                InitialRingPositions = new NumbersOrLetters("JEZA"),
+                RingSettings = new NumbersOrLetters(new [] { 13, 26, 17, 16 })
+            };
+
+            //messagekey: jeza
+            Crypt(KnownMachines.RailwayK, machineconfiguration, encryptedMessage, decryptedMessage);
+        }
 
         [Theory]
-        [InlineData('P', 'G')]
-        [InlineData('G', 'P')]
-        public void Example(char typeLetter, char expected)
+        [InlineData("P", "G")]
+        [InlineData("G", "P")]
+        public void Example(string input, string expected)
         {
             // https://www.codesandciphers.org.uk/enigma/example1.htm
             var configuration = new MachineConfiguration
             {
                 WheelOrder = new string[] { "I", "II", "III" },
-                RingSettings = new int[] { 1, 1, 1 },
-                RingPositions = "AAZ",
+                RingSettings = new NumbersOrLetters(new int[] { 1, 1, 1 }),
+                InitialRingPositions = new NumbersOrLetters("AAZ"),
                 ReflectorName = "UKW-B",
-                
             };
 
-            var machine = EnigmaBuilder.BuildMachine(KnownMachines.I, configuration);
-
-            machine.TypeLetter(typeLetter).ShouldBe(expected);
+            Crypt(KnownMachines.I, configuration, input, expected);
         }
+
+        [Theory]
+        [InlineData(
+            "YKAE NZAP MSCH ZBFO CUVM RMDP YCOF HADZ IZME FXTH FLOL PZLF GGBO TGOX GRET DWTJ IQHL MXVJ WKZU ASTR",
+            "STEUE REJTA NAFJO RDJAN STAND ORTQU AAACC CVIER NEUNN EUNZW OFAHR TZWON ULSMX XSCHA RNHOR STHCO")]
+        public void Scharnhorst(string input, string expected)
+        {
+            /*
+            Machine Settings for Enigma M3
+            Reflector:       B
+            Wheel order:     III VI VIII
+            Ring positions:  01 08 13
+            Plug pairs:	     AN EZ HK IJ LR MQ OT PV SW UX
+            Message key:     UZV
+            */
+
+            var configuration = new MachineConfiguration
+            {
+                WheelOrder = new string[] { "III", "VI", "VIII" },
+                ReflectorName = "UKW-B",
+                RingSettings = new NumbersOrLetters(new[] { 01, 08, 13 }),
+                InitialRingPositions = new NumbersOrLetters("UZV"),
+                Plugboard = "AN EZ HK IJ LR MQ OT PV SW UX"
+            };
+
+            Crypt(KnownMachines.M3, configuration, input, expected);
+        }
+
+        
     }
 }
-//        [Fact]
-//        public void Message1()
-//        {
-//            //const string sourceMessage = "DEUTS QETRU PPENS INDJE TZTIN ENGLA ND";
-//            //const string expectedEncryptedMessage = "QSZVI DVMPN EXACM RWWXU IYOTY NGVVX DZ";
 
-//            var machineDefinition = new EnigmaMachineDefinition
-//            {
-//                Name = "T",
-//                Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-//                Inputs = new InputDefinition[]
-//                {
-//                    new InputDefinition("ETW", "KZROUQHYAIGBLWVSTDXFPNMCJE")
-//                },
-//                Rotors = new EnigmaRotorDefinition[]
-//                {
-//                    new EnigmaRotorDefinition("I", "KPTYUELOCVGRFQDANJMBSWHZXI", "EHMSY"),
-//                    new EnigmaRotorDefinition("II", "UPHZLWEQMTDJXCAKSOIGVBYFNR", "EHNTZ"),
-//                    new EnigmaRotorDefinition("III", "QUDLYRFEKONVZAXWHMGPJBSICT", "EHMSY"),
-//                    new EnigmaRotorDefinition("IV", "CIWTBKXNRESPFLYDAGVHQUOJZM", "EHNTZ"),
-//                    new EnigmaRotorDefinition("V", "UAXGISNJBVERDYLFZWTPCKOHMQ", "GKNSZ"),
-//                    new EnigmaRotorDefinition("VI", "XFUZGALVHCNYSEWQTDMRBKPIOJ", "FMQUY"),
-//                    new EnigmaRotorDefinition("VII", "BJVFTXPLNAYOZIKWGDQERUCHSM", "GKNSZ"),
-//                    new EnigmaRotorDefinition("VIII", "YMTPNZHWKODAJXELUQVGCBISFR", "FMQUY")
-//                },
-//                Reflectors = new ReflectorDefinition[]
-//                {
-//                    new ReflectorDefinition("UKW", "GEKPBTAUMOCNILJDXZYFHWVQSR")
-//                }
-//            };
-
-//            var machine = EnigmaBuilder.BuildMachine(machineDefinition);
-
-//            var machineInstanceDefinition = new EnigmaMachineInstanceDefinition
-//            {
-//                Machine = machine,
-//                InputName = "ETW",
-//                RotorNames = new[] { "VI", "IV", "VII" },
-//                ReflectorName = "UKW",
-//                InitialRotorPositions = new[] { 06, 17, 03, 20 }
-//            };
-
-//            var machineInstance = EnigmaBuilder.BuildMachineInstance(machineInstanceDefinition);
-
-//            machineInstance.TypeLetter('D').ShouldBe('Q');
-//        }
-//    }
-//}

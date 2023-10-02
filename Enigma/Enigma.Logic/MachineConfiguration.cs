@@ -1,4 +1,4 @@
-﻿namespace Enigma.Logic.Configuration
+﻿namespace Enigma.Logic
 {
     public class MachineConfiguration
     {
@@ -18,15 +18,18 @@
         public required string ReflectorName { get; set; }
 
         /// <summary>
-        /// One based position of the ring setting
+        /// Ring Settings in the order of [Right Rotor, Middle Rotor, Left Rotor, Reflector]
         /// </summary>
-        public required int[] RingSettings{ get; set; }
+        public required NumbersOrLetters RingSettings { get; set; }
 
         /// <summary>
-        /// The initial position of the rings.
+        /// Initial Ring (wheel) Positions in the order of [Right Rotor, Middle Rotor, Left Rotor, Reflector]
         /// </summary>
-        public required string RingPositions { get; set; }
+        public required NumbersOrLetters InitialRingPositions { get; set; }
 
+        /// <summary>
+        /// A plugboard in the space separated format of "AB DZ"
+        /// </summary>
         public string? Plugboard { get; set; }
     }
 }

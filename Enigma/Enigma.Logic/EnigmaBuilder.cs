@@ -1,5 +1,4 @@
-﻿using Enigma.Logic.Configuration;
-using Enigma.Logic.Definitions;
+﻿using Enigma.Logic.Definitions;
 
 namespace Enigma.Logic
 {
@@ -98,11 +97,17 @@ namespace Enigma.Logic
 
         public static Machine BuildMachine(MachineDefinition machineDefinition, MachineConfiguration machineConfiguration)
         {
+            //Alphabet
             var alphabet = BuildAlphabet(machineDefinition.Alphabet);
 
+            var ringSettings = machineConfiguration.RingSettings.ToInidicies(alphabet);
+            var ringPositions = machineConfiguration.InitialRingPositions.ToInidicies(alphabet);
+
+            //Validate slot count
             if (machineConfiguration.WheelOrder.Length != machineDefinition.SlotCount)
                 throw new InvalidOperationException($"The machine has {machineDefinition.SlotCount} slots but the configuration had {machineConfiguration.WheelOrder.Length} wheels.");
 
+            //Get the input wheel (if one is specified)
             InputWheel? input = null;
 
             if (!string.IsNullOrWhiteSpace(machineConfiguration.InputName))
@@ -116,6 +121,7 @@ namespace Enigma.Logic
                 input = new InputWheel(BuildRotorCore(alphabet, inputDefinition.Connections));
             }
 
+            //Get the reflector definition.
             var reflectorDefinition = machineDefinition.Reflectors
                 .FirstOrDefault(r => string.CompareOrdinal(r.Name, machineConfiguration.ReflectorName) == 0);
 
@@ -123,7 +129,14 @@ namespace Enigma.Logic
                 throw new InvalidOperationException($"Unable to find reflector wheel named '{machineConfiguration.ReflectorName}'.");
 
             //TODO: Get the optional ring setting for the reflector
-            var reflector = new Reflector(BuildRotorCore(alphabet, reflectorDefinition.Connections), 0);
+            var reflectorRingSetting = 0;
+            
+            if (ringSettings.Length == machineDefinition.SlotCount + 1)
+            {
+                reflectorRingSetting = ringSettings[machineDefinition.SlotCount] - 1;
+            }
+
+            var reflector = new Reflector(BuildRotorCore(alphabet, reflectorDefinition.Connections), reflectorRingSetting);
 
             var rotors = new RotorWheel[machineDefinition.SlotCount];
 
@@ -139,13 +152,15 @@ namespace Enigma.Logic
 
                 var core = BuildRotorCore(alphabet, rotorDefinition.Connections);
 
-                var ringPositionIndex = alphabet.IndexOf(machineConfiguration.RingPositions[index]);
+                var ringSettingIndex = ringSettings[index];
+                var ringPositionIndex = ringPositions[index];
 
                 var notchIndicies = alphabet.GetIndicies(rotorDefinition.Notches);
 
                 rotors[index] = new RotorWheel(
-                    core, 
-                    machineConfiguration.RingSettings[index] - 1, ringPositionIndex,
+                    core,
+                    ringSettingIndex, 
+                    ringPositionIndex,
                     notchIndicies);
   
             }
