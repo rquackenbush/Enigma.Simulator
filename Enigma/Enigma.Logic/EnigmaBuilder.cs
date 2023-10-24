@@ -131,6 +131,8 @@ namespace Enigma.Logic
             //TODO: Get the optional ring setting for the reflector
             var reflectorRingSetting = 0;
             
+            //TODO: Handle machines that SUPPORT a ring setting on the reflector, and those that DON'T
+            
             if (ringSettings.Length == machineDefinition.SlotCount + 1)
             {
                 reflectorRingSetting = ringSettings[machineDefinition.SlotCount] - 1;

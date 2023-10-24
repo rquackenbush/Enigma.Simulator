@@ -37,14 +37,18 @@ namespace Enigma.Logic
             }
 
             if (reflector != null) 
-            {
                 temp.Add(new EffectiveMapper(reflector.Core, Direction.Reflect));
-            }
-
+            
             foreach (var rotor in rotors)
             {
                 temp.Add(new EffectiveMapper(rotor, Direction.Out));
             }
+
+            if (input != null)
+                temp.Add(new EffectiveMapper(input, Direction.Out));
+
+            if (plugboard != null)
+                temp.Add(new EffectiveMapper(plugboard, Direction.Out));
 
             mappers = temp.ToArray();
         }
