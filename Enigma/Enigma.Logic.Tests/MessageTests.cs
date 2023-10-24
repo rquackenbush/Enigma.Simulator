@@ -1,11 +1,12 @@
 ﻿using Enigma.Logic.Definitions;
+using System.Text;
 using Xunit.Abstractions;
 
 namespace Enigma.Logic.Tests
 {
     public class MessageTests
     {
-        private ITestOutputHelper output;
+        private readonly ITestOutputHelper output;
 
         public MessageTests(ITestOutputHelper output)
         {
@@ -23,9 +24,22 @@ namespace Enigma.Logic.Tests
             {
                 var machine = EnigmaBuilder.BuildMachine(machineDefnition, machineConfiguration);
 
-                var decryptedMessage = machine.TypeMessage(input);
+                this.output.WriteLine(machine.ToTable("Initial"));
 
-                decryptedMessage.ShouldBe(output);
+                var decryptedMessage = new StringBuilder();
+
+                foreach(var inputLetter in input)
+                {
+                    var result = machine.TypeLetter(inputLetter);
+
+                    decryptedMessage.Append(result.OutputLetter);
+
+                    this.output.WriteLine(machine.ToTable($"{inputLetter} -> {result.OutputLetter}" ));
+
+                    this.output.WriteLine(result.ToTable());
+                }
+
+                decryptedMessage.ToString().ShouldBe(output);
             }
 
             //Reverse
@@ -75,6 +89,38 @@ namespace Enigma.Logic.Tests
         }
 
         [Theory]
+        [InlineData("OPGN DXCF WEVT NRSD ULTP", "THIS IS A SECRET MESSAGE")]
+        public void Madlab1(string input, string expected)
+        {
+            // http://www.madlab.org/guides/enigma.html
+            var configuration = new MachineConfiguration
+            {
+                WheelOrder = new string[] { "I", "II", "III" },
+                RingSettings = new NumbersOrLetters(new int[] { 1, 1, 1 }),
+                InitialRingPositions = new NumbersOrLetters("AAA"),
+                ReflectorName = "UKW-A"
+            };
+
+            Crypt(KnownMachines.I, configuration, input, expected);
+        }
+
+        [Theory]
+        [InlineData("ZUZB PCBG EOGY TRPB VUXG QTIX AWHT ZDZV ITOA", "ENIGMA WAS USED DURING THE SECOND WORLD WAR")]
+        public void Madlab2(string input, string expected)
+        {
+            // http://www.madlab.org/guides/enigma.html
+            var configuration = new MachineConfiguration
+            {
+                WheelOrder = new string[] { "VII", "I", "III" },
+                RingSettings = new NumbersOrLetters(new int[] { 1, 1, 1 }),
+                InitialRingPositions = new NumbersOrLetters("AAA"),
+                ReflectorName = "UKW-C"
+            };
+
+            Crypt(KnownMachines.I, configuration, input, expected);
+        }
+
+        [Theory]
         [InlineData("P", "G")]
         [InlineData("G", "P")]
         public void Example(string input, string expected)
@@ -108,6 +154,7 @@ namespace Enigma.Logic.Tests
 
             var configuration = new MachineConfiguration
             {
+                InputName = "ETW",
                 WheelOrder = new string[] { "III", "VI", "VIII" },
                 ReflectorName = "UKW-B",
                 RingSettings = new NumbersOrLetters(new[] { 01, 08, 13 }),

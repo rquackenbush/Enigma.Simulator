@@ -5,9 +5,12 @@
     /// </summary>
     public class RotorCore : CrossConnector
     {
-        public RotorCore(CrossConnection[] connections) 
+        public RotorCore(string name, CrossConnection[] connections) 
             : base(connections, true)
         {
+            Name = name;
         }
+
+        public override string Name { get; }
     }
 }

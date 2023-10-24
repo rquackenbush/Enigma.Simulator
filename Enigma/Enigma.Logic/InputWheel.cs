@@ -2,8 +2,8 @@
 {
     public class InputWheel : WheelBase, IConnectionMapper
     {
-        public InputWheel(RotorCore core) 
-            : base(core, 0, 0)
+        public InputWheel(string name, RotorCore core) 
+            : base(name, core, 0, 0)
         {
         }
     }

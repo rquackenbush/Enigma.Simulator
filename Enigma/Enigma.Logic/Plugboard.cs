@@ -6,5 +6,7 @@
             : base(connections, true)
         {
         }
+
+        public override string Name => "Plugboard";
     }
 }

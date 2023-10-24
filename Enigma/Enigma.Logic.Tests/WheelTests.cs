@@ -12,14 +12,14 @@
             var builtAlphabet = EnigmaBuilder.BuildAlphabet(alphabet);
 
             //Build the rotorcore
-            var rotorCore = EnigmaBuilder.BuildRotorCore(builtAlphabet, connections);
+            var rotorCore = EnigmaBuilder.BuildRotorCore("Foo", builtAlphabet, connections);
 
             //Get the offsets
             var ringSettingIndex = alphabet.IndexOf(ringSetting);
             var initialPositionIndex = alphabet.IndexOf(wheelSetting);
 
             //Build the wheel
-            var wheel = new RotorWheel(rotorCore, ringSettingIndex, initialPositionIndex, new int[] { 0 });
+            var wheel = new RotorWheel("", rotorCore, ringSettingIndex, initialPositionIndex, new int[] { 0 });
 
             //Send a signal through the wheel
             var outputIndex = wheel.MapForward(alphabet.IndexOf(inputChar));

@@ -14,7 +14,7 @@ namespace Enigma.Logic
             return new Alphabet(letters.ToArray());
         }
 
-        public static RotorCore BuildRotorCore(Alphabet alphabet, string connections)
+        public static RotorCore BuildRotorCore(string name, Alphabet alphabet, string connections)
         {
             var connectionLetters = connections.ToArray();
 
@@ -36,7 +36,7 @@ namespace Enigma.Logic
                 positionIndex++;
             }
 
-            return new RotorCore(rotorCoreConnections);
+            return new RotorCore(name, rotorCoreConnections);
         }
 
         /// <summary>
@@ -113,12 +113,12 @@ namespace Enigma.Logic
             if (!string.IsNullOrWhiteSpace(machineConfiguration.InputName))
             {
                 var inputDefinition = machineDefinition.Inputs
-              .FirstOrDefault(i => string.CompareOrdinal(i.Name, machineConfiguration.InputName) == 0);
+                    .FirstOrDefault(i => string.CompareOrdinal(i.Name, machineConfiguration.InputName) == 0);
 
                 if (inputDefinition == null)
                     throw new InvalidOperationException($"Unable to find input wheel named '{machineConfiguration.InputName}'.");
 
-                input = new InputWheel(BuildRotorCore(alphabet, inputDefinition.Connections));
+                input = new InputWheel(inputDefinition.Name, BuildRotorCore(inputDefinition.Name, alphabet, inputDefinition.Connections));
             }
 
             //Get the reflector definition.
@@ -136,7 +136,7 @@ namespace Enigma.Logic
                 reflectorRingSetting = ringSettings[machineDefinition.SlotCount] - 1;
             }
 
-            var reflector = new Reflector(BuildRotorCore(alphabet, reflectorDefinition.Connections), reflectorRingSetting);
+            var reflector = new Reflector(reflectorDefinition.Name, BuildRotorCore(reflectorDefinition.Name, alphabet, reflectorDefinition.Connections), reflectorRingSetting);
 
             var rotors = new RotorWheel[machineDefinition.SlotCount];
 
@@ -150,7 +150,7 @@ namespace Enigma.Logic
                 if (rotorDefinition == null)
                     throw new InvalidOperationException($"Unable to find wheel '{rotorName}'.");
 
-                var core = BuildRotorCore(alphabet, rotorDefinition.Connections);
+                var core = BuildRotorCore(rotorName, alphabet, rotorDefinition.Connections);
 
                 var ringSettingIndex = ringSettings[index];
                 var ringPositionIndex = ringPositions[index];
@@ -158,6 +158,7 @@ namespace Enigma.Logic
                 var notchIndicies = alphabet.GetIndicies(rotorDefinition.Notches);
 
                 rotors[index] = new RotorWheel(
+                    rotorDefinition.Name,
                     core,
                     ringSettingIndex, 
                     ringPositionIndex,
@@ -165,7 +166,7 @@ namespace Enigma.Logic
   
             }
 
-            return new Machine(alphabet, input, rotors, reflector, null);
+            return new Machine(machineDefinition.Name, alphabet, input, rotors, reflector, null);
         }
     }
 }

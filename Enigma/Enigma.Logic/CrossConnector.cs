@@ -55,6 +55,8 @@ namespace Enigma.Logic
                 .ToArray());
         }
 
+        public abstract string Name { get; }
+
         public int MapForward(int inputIndex)
         {
             return forward[inputIndex];

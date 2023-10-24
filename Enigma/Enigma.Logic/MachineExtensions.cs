@@ -10,7 +10,7 @@ namespace Enigma.Logic
 
             foreach(var inputChar in message)
             {
-                response.Append(machine.TypeLetter(inputChar));
+                response.Append(machine.TypeLetter(inputChar).OutputLetter);
             }
 
             return response.ToString();

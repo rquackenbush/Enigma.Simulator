@@ -12,7 +12,7 @@
             var alphabet = EnigmaBuilder.BuildAlphabet(alphabetDefinition);
 
             // Build the rotorcore
-            var rotorCore = EnigmaBuilder.BuildRotorCore(alphabet, connectionDefinitions);
+            var rotorCore = EnigmaBuilder.BuildRotorCore("Foo", alphabet, connectionDefinitions);
 
             // Get the index of the input letter
             var inputIndex = alphabet.IndexOf(inLetter);
@@ -34,7 +34,7 @@
             var alphabet = EnigmaBuilder.BuildAlphabet(alphabetDefinition);
 
             // Build the rotorcore
-            var rotorCore = EnigmaBuilder.BuildRotorCore(alphabet, connectionDefinitions);
+            var rotorCore = EnigmaBuilder.BuildRotorCore("Bar", alphabet, connectionDefinitions);
 
             // Get the index of the input letter
             var outputIndex = alphabet.IndexOf(outLetter);
