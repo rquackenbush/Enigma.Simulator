@@ -45,12 +45,13 @@ namespace Enigma.Logic
         /// <param name="alphabet"></param>
         /// <param name="connections">A string in the format of 'AB CD'</param>
         /// <returns></returns>
-        public static Plugboard BuildPlugboard(Alphabet alphabet, string connections)
+        public static Plugboard? BuildPlugboard(Alphabet alphabet, string? connections)
         {
             if (alphabet is null)
                 throw new ArgumentNullException(nameof(alphabet));
 
-            connections ??= string.Empty;
+            if (connections == null)
+                return null;
 
             var pairs = connections.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
@@ -101,7 +102,33 @@ namespace Enigma.Logic
             var alphabet = BuildAlphabet(machineDefinition.Alphabet);
 
             var ringSettings = machineConfiguration.RingSettings.ToInidicies(alphabet);
-            var ringPositions = machineConfiguration.InitialRingPositions.ToInidicies(alphabet);
+            var wheelPositions = machineConfiguration.InitialWheelPositions.ToInidicies(alphabet);
+
+            if (ringSettings.Length == machineDefinition.SlotCount)
+            {
+                ringSettings = ringSettings
+                    .Prepend(0)
+                    .ToArray();
+            }
+            else if (ringSettings.Length == machineDefinition.SlotCount + 1)
+            {
+                //We're good
+            }
+            else
+                throw new InvalidOperationException($"The number of ring settings was {ringSettings.Length}. Expected {wheelPositions.Length} or {wheelPositions.Length + 1}.");
+
+            if (wheelPositions.Length == machineDefinition.SlotCount)
+            {
+                wheelPositions = wheelPositions
+                    .Prepend(0)
+                    .ToArray();
+            }
+            else if (wheelPositions.Length == machineDefinition.SlotCount + 1)
+            {
+                //We're good.
+            }
+            else
+                throw new InvalidOperationException($"The number of wheel positions was {wheelPositions.Length}. Expected {wheelPositions.Length} or {wheelPositions.Length + 1}.");
 
             //Validate slot count
             if (machineConfiguration.WheelOrder.Length != machineDefinition.SlotCount)
@@ -128,17 +155,7 @@ namespace Enigma.Logic
             if (reflectorDefinition == null)
                 throw new InvalidOperationException($"Unable to find reflector wheel named '{machineConfiguration.ReflectorName}'.");
 
-            //TODO: Get the optional ring setting for the reflector
-            var reflectorRingSetting = 0;
-            
-            //TODO: Handle machines that SUPPORT a ring setting on the reflector, and those that DON'T
-            
-            if (ringSettings.Length == machineDefinition.SlotCount + 1)
-            {
-                reflectorRingSetting = ringSettings[machineDefinition.SlotCount] - 1;
-            }
-
-            var reflector = new Reflector(reflectorDefinition.Name, BuildRotorCore(reflectorDefinition.Name, alphabet, reflectorDefinition.Connections), reflectorRingSetting);
+            var reflector = new Reflector(reflectorDefinition.Name, BuildRotorCore(reflectorDefinition.Name, alphabet, reflectorDefinition.Connections), ringSettings[0], wheelPositions[0]);
 
             var rotors = new RotorWheel[machineDefinition.SlotCount];
 
@@ -154,8 +171,9 @@ namespace Enigma.Logic
 
                 var core = BuildRotorCore(rotorName, alphabet, rotorDefinition.Connections);
 
-                var ringSettingIndex = ringSettings[index];
-                var ringPositionIndex = ringPositions[index];
+                //The first element in these arrays is always for the reflector
+                var ringSettingIndex = ringSettings[index + 1];
+                var ringPositionIndex = wheelPositions[index + 1];
 
                 var notchIndicies = alphabet.GetIndicies(rotorDefinition.Notches);
 
@@ -168,7 +186,9 @@ namespace Enigma.Logic
   
             }
 
-            return new Machine(machineDefinition.Name, alphabet, input, rotors, reflector, null);
+            var plugboard = BuildPlugboard(alphabet, machineConfiguration.Plugboard);
+
+            return new Machine(machineDefinition.Name, alphabet, input, rotors, reflector, plugboard);
         }
     }
 }

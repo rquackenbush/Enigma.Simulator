@@ -4,8 +4,8 @@
     {
         private readonly HashSet<int> notchIndicies;
 
-        public RotorWheel(string name, RotorCore core, int ringSettingIndex, int initialPositionIndex, int[] notchIndicies) 
-            : base(name, core, ringSettingIndex, initialPositionIndex)
+        public RotorWheel(string name, RotorCore core, int ringSettingIndex, int initialWheelPositionIndex, int[] notchIndicies) 
+            : base(name, core, ringSettingIndex, initialWheelPositionIndex)
         {
             this.notchIndicies = notchIndicies.ToHashSet();
         }

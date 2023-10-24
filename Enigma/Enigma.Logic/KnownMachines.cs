@@ -66,15 +66,15 @@ namespace Enigma.Logic
             });
 
         private readonly static Lazy<MachineDefinition> i = new(() =>
-             new MachineDefinition
-             {
-                 Name = "I",
-                 Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-                 Inputs = new InputDefinition[]
+            new MachineDefinition
+            {
+                Name = "I",
+                Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                Inputs = new InputDefinition[]
                 {
                     new InputDefinition("ETW", "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
                 },
-                 Rotors = new RotorDefinition[]
+                Rotors = new RotorDefinition[]
                 {
                     new ("I", "EKMFLGDQVZNTOWYHXUSPAIBRCJ", "Y"),
                     new ("II", "AJDKSIRUXBLHWTMCQGZNPYFVOE", "M"),
@@ -82,15 +82,15 @@ namespace Enigma.Logic
                     new ("IV", "ESOVPZJAYQUIRHXLNFTGKDCMWB", "R"),
                     new ("V", "VZBRGITYUPSDNHLXAWMJQOFECK", "H"),
                 },
-                 Reflectors = new ReflectorDefinition[]
+                Reflectors = new ReflectorDefinition[]
                 {
                     new ("UKW-A", "EJMZALYXVBWFCRQUONTSPIKHGD", true),
                     new ("UKW-B", "YRUHQSLDPXNGOKMIEBFZCWVJAT", true),
                     new ("UKW-C", "FVPJIAOYEDRZXWGCTKUQSBNMHL", true),
                 },
-                 SlotCount = 3,
-                 HasPlugBoard = true
-             });
+                SlotCount = 3,
+                HasPlugBoard = true
+            });
 
         private readonly static Lazy<MachineDefinition> k = new(() =>
             new MachineDefinition
@@ -138,12 +138,14 @@ namespace Enigma.Logic
                     },
                 Reflectors = new ReflectorDefinition[]
                     {
-                        new ("UKW", "OIUSYPMLBZXHGQAFNWDVCTRKEJ", true)
+                        new ("UKW", "DNSAJQIPGEXRWBVHFLCZYOMKUT", true)
                     },
                 SlotCount = 3,
                 HasPlugBoard = false
             });
 
+        // https://www.cryptomuseum.com/crypto/enigma/m3/index.htm
+        // https://en.wikipedia.org/wiki/Enigma_rotor_details
         private readonly static Lazy<MachineDefinition> m3 = new(() =>
             new MachineDefinition
             {
@@ -151,7 +153,8 @@ namespace Enigma.Logic
                 Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
                 Inputs = new InputDefinition[]
                 {
-                    new ("ETW", "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                    //new ("ETW", "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                    new ("ETW", "QWERTZUIOASDFGHJKPYXCVBNML")
                 },
                 Rotors = new RotorDefinition[]
                 {

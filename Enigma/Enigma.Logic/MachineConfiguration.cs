@@ -25,7 +25,7 @@
         /// <summary>
         /// Initial Ring (wheel) Positions in the order of [Right Rotor, Middle Rotor, Left Rotor, Reflector]
         /// </summary>
-        public required NumbersOrLetters InitialRingPositions { get; set; }
+        public required NumbersOrLetters InitialWheelPositions { get; set; }
 
         /// <summary>
         /// A plugboard in the space separated format of "AB DZ"

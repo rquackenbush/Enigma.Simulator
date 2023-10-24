@@ -2,8 +2,8 @@
 {
     public class Reflector : WheelBase
     {
-        public Reflector(string name, RotorCore core, int ringSettingIndex) 
-            : base(name, core, ringSettingIndex, 0)
+        public Reflector(string name, RotorCore core, int ringSettingIndex, int initialWheelPositionIndex) 
+            : base(name, core, ringSettingIndex, initialWheelPositionIndex)
         {
         }
 

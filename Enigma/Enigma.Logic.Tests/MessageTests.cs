@@ -24,7 +24,7 @@ namespace Enigma.Logic.Tests
             {
                 var machine = EnigmaBuilder.BuildMachine(machineDefnition, machineConfiguration);
 
-                this.output.WriteLine(machine.ToTable("Initial"));
+                this.output.WriteLine(machine.ToTable("Initial", true));
 
                 var decryptedMessage = new StringBuilder();
 
@@ -80,8 +80,8 @@ namespace Enigma.Logic.Tests
                 },
                 ReflectorName = "UKW",
 
-                InitialRingPositions = new NumbersOrLetters("JEZA"),
-                RingSettings = new NumbersOrLetters(new [] { 13, 26, 17, 16 })
+                InitialWheelPositions = new NumbersOrLetters("JEZA"),
+                RingSettings = new NumbersOrLetters(new [] { 26, 17, 16, 13 })
             };
 
             //messagekey: jeza
@@ -97,27 +97,50 @@ namespace Enigma.Logic.Tests
             {
                 WheelOrder = new string[] { "I", "II", "III" },
                 RingSettings = new NumbersOrLetters(new int[] { 1, 1, 1 }),
-                InitialRingPositions = new NumbersOrLetters("AAA"),
+                InitialWheelPositions = new NumbersOrLetters("AAA"),
                 ReflectorName = "UKW-A"
             };
 
-            Crypt(KnownMachines.I, configuration, input, expected);
+            Crypt(KnownMachines.M3, configuration, input, expected);
         }
 
         [Theory]
         [InlineData("ZUZB PCBG EOGY TRPB VUXG QTIX AWHT ZDZV ITOA", "ENIGMA WAS USED DURING THE SECOND WORLD WAR")]
         public void Madlab2(string input, string expected)
         {
+            // Encoded with rotors 7, 1, 3 and reflector C
+
             // http://www.madlab.org/guides/enigma.html
             var configuration = new MachineConfiguration
             {
                 WheelOrder = new string[] { "VII", "I", "III" },
                 RingSettings = new NumbersOrLetters(new int[] { 1, 1, 1 }),
-                InitialRingPositions = new NumbersOrLetters("AAA"),
+                InitialWheelPositions = new NumbersOrLetters("AAA"),
                 ReflectorName = "UKW-C"
             };
 
-            Crypt(KnownMachines.I, configuration, input, expected);
+            Crypt(KnownMachines.M3, configuration, input, expected);
+        }
+
+        [Theory]
+        [InlineData("A", "B")]
+        public void M3(string input, string expected)
+        {
+            // https://www.101computing.net/enigma-machine-emulator/   - shows steps
+            // https://cryptii.com/pipes/enigma-machine                - slick interface but doesn't show steps
+
+            // http://www.madlab.org/guides/enigma.html
+            var configuration = new MachineConfiguration
+            {
+                //InputName = "ETW",
+                WheelOrder = new string[] { "I", "II", "III" },
+                RingSettings = new NumbersOrLetters(new int[] { 1, 1, 1 }),
+                InitialWheelPositions = new NumbersOrLetters("AAA"),
+                ReflectorName = "UKW-B",
+                //Plugboard = ""
+            };
+
+            Crypt(KnownMachines.M3, configuration, input, expected);
         }
 
         [Theory]
@@ -130,7 +153,7 @@ namespace Enigma.Logic.Tests
             {
                 WheelOrder = new string[] { "I", "II", "III" },
                 RingSettings = new NumbersOrLetters(new int[] { 1, 1, 1 }),
-                InitialRingPositions = new NumbersOrLetters("AAZ"),
+                InitialWheelPositions = new NumbersOrLetters("AAZ"),
                 ReflectorName = "UKW-B",
             };
 
@@ -158,7 +181,7 @@ namespace Enigma.Logic.Tests
                 WheelOrder = new string[] { "III", "VI", "VIII" },
                 ReflectorName = "UKW-B",
                 RingSettings = new NumbersOrLetters(new[] { 01, 08, 13 }),
-                InitialRingPositions = new NumbersOrLetters("UZV"),
+                InitialWheelPositions = new NumbersOrLetters("UZV"),
                 Plugboard = "AN EZ HK IJ LR MQ OT PV SW UX"
             };
 

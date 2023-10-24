@@ -1,15 +1,11 @@
 ﻿using Snork.AsciiTable;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection.PortableExecutable;
 
 namespace Enigma.Logic.Tests
 {
-    public static class MachineExtensions
+    public static class TableExtensions
     {
-        public static string ToTable(this Machine machine, string title)
+        public static string ToTable(this Machine machine, string title, bool includeRingSettings = false)
         {
             var table = new AsciiTableGenerator(title);
 
@@ -61,24 +57,50 @@ namespace Enigma.Logic.Tests
                     "Position"
                 };
 
-                rowItems.Add("");
+                rowItems.Add(machine.Alphabet.GetWheelPositionString(machine.Reflector.PositionIndex));
 
                 for (var rotorIndex = 0; rotorIndex < machine.Rotors.Length; rotorIndex++)
                 {
                     var positionIndex = machine.Rotors[rotorIndex].PositionIndex;
 
-                    rowItems.Add($"{positionIndex + 1:00} - {machine.Alphabet[positionIndex].Letter}");
+                    rowItems.Add(machine.Alphabet.GetWheelPositionString(positionIndex));
                 }
 
                 if (machine.Input != null)
                 {
-                    rowItems.Add("");
+                    rowItems.Add(machine.Alphabet.GetWheelPositionString(machine.Input.PositionIndex));
                 }
 
                 table.Add(rowItems.ToArray());
             }
 
-            //Ring?
+            //Ring Settings
+            if (includeRingSettings)
+            {
+                var rowItems = new List<object>
+                {
+                    "Ring Setting"
+                };
+
+                //Reflector
+                rowItems.Add(machine.Alphabet.GetWheelPositionString(machine.Reflector.RingSettingIndex));
+
+                //Rotors
+                for (var rotorIndex = 0; rotorIndex < machine.Rotors.Length; rotorIndex++)
+                {
+                    var ringSettingIndex = machine.Rotors[rotorIndex].RingSettingIndex;
+
+                    rowItems.Add(machine.Alphabet.GetWheelPositionString(ringSettingIndex));
+                }
+
+                //Input
+                if (machine.Input != null) 
+                {
+                    rowItems.Add(machine.Alphabet.GetWheelPositionString(machine.Input.RingSettingIndex));
+                }
+
+                table.Add(rowItems.ToArray());
+            }
 
 
             return table.ToString();
@@ -91,10 +113,12 @@ namespace Enigma.Logic.Tests
             var captions = new List<string>
             {
                 "Name",
-                "Input",
-                "Output",
+                "In",
+                "Out",
                 "Direction"
             };
+
+            table.SetCaptions(captions.ToArray());
 
             foreach(var operation in result.Operations)
             {
@@ -106,6 +130,11 @@ namespace Enigma.Logic.Tests
             }
 
             return table.ToString();
+        }
+
+        public static string GetWheelPositionString(this Alphabet alphabet, int positionIndex)
+        {
+            return $"{positionIndex + 1:00} - {alphabet[positionIndex].Letter}";
         }
     }
 }

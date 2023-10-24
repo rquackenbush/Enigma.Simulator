@@ -5,12 +5,12 @@
     /// </summary>
     public abstract class WheelBase
     { 
-        public WheelBase(string name, RotorCore core, int ringSettingIndex, int initialPositionIndex)
+        public WheelBase(string name, RotorCore core, int ringSettingIndex, int initialWheelPositionIndex)
         {
             Name = name;
             Core = core ?? throw new ArgumentNullException(nameof(core));
             RingSettingIndex = ringSettingIndex;
-            PositionIndex = initialPositionIndex;
+            PositionIndex = initialWheelPositionIndex;
         }
 
         public string Name { get; }
