@@ -6,12 +6,12 @@ namespace Enigma.Logic
     {
         private readonly ImmutableArray<int> notchIndicies;
 
-        public Rotor(string name, string alphabet, string wiring, string notches, int ringSettingIndex, int initialPositionIndex) 
+        public Rotor(string name, string alphabet, string wiring, int[] notchIndicies, int ringSettingIndex, int initialPositionIndex) 
             : base(name, alphabet, wiring, ringSettingIndex, initialPositionIndex)
         {
-            notchIndicies = notches
-              .Select(n => alphabet.IndexOf(n))
-              .ToImmutableArray();
+            this.notchIndicies = notchIndicies
+                .Select(i => (i + EnigmaConstants.NotchOffset).Mod(alphabet.Length))
+                .ToImmutableArray();
         }
 
         /// <summary>

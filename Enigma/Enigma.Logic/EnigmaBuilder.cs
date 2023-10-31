@@ -4,21 +4,6 @@ namespace Enigma.Logic
 {
     public static class EnigmaBuilder
     {
-        ///// <summary>
-        ///// Builds an alphabet from a string of letters.
-        ///// </summary>
-        ///// <param name="letters">The letters of the alphabet. These letters must be unique.</param>
-        ///// <returns></returns>
-        //public static Alphabet BuildAlphabet(string letters)
-        //{
-        //    return new Alphabet(letters.ToArray());
-        //}
-
-        //public static Rotor BuildRotor(string name, string alphabet, string wiring, string notches, int ringSettingIndex, char initialPosition)
-        //{
-        //    return new Rotor(name, alphabet, wiring, notches, ringSettingIndex, initialPosition);
-        //}
-
         /// <summary>
         /// Build a configured plugboard.
         /// </summary>
@@ -140,7 +125,7 @@ namespace Enigma.Logic
                     rotorDefinition.Name,
                     machineDefinition.Alphabet,
                     rotorDefinition.Wiring,
-                    rotorDefinition.Notches,
+                    notchIndicies,
                     ringSettingIndex,
                     wheelPositionIndex);
   

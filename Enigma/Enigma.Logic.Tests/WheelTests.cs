@@ -3,11 +3,6 @@
     public class WheelTests
     {
         [Theory]
-        //[InlineData("ABCD", "DCBA", 'A', 'A', 'A', 'D')]
-        //[InlineData("ABCD", "DCBA", 'A', 'B', 'A', 'C')]
-        //[InlineData("ABCD", "DCBA", 'A', 'A', 'B', 'C')]
-        //[InlineData("ABCD", "ABCD", 'B', 'A', 'A', 'B')]
-
         [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "BDFHJLCPRTXVZNYEIWGAKMUSQO", 'A', 0, 'A', 'B')]
         [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "BDFHJLCPRTXVZNYEIWGAKMUSQO", 'A', 0, 'B', 'D')]
         [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "BDFHJLCPRTXVZNYEIWGAKMUSQO", 'A', 1, 'A', 'P')]
@@ -15,7 +10,7 @@
         public void WheelShouldSignalForward(string alphabet, string wiring, char wheelSetting, int ringSetting, char inputLetter, char expectedLetter)
         {
             //Build the Wheel
-            var rotor = new Rotor("Test", alphabet, wiring, "", ringSetting, alphabet.IndexOf(wheelSetting));
+            var rotor = new Rotor("Test", alphabet, wiring, Array.Empty<int>(), ringSetting, alphabet.IndexOf(wheelSetting));
 
             //Send a signal through the wheel
             var outputIndex = rotor.SignalForward(alphabet.IndexOf(inputLetter));
@@ -28,12 +23,10 @@
         [Theory]
         [InlineData("ABCD", "DCBA", 'A', 'A', 'D', 'A')]
         [InlineData("ABCD", "DCBA", 'A', 'B', 'D', 'B')]
-        //[InlineData("ABCD", "DCBA", 'A', 'A', 'B', 'C')]
-        //[InlineData("ABCD", "ABCD", 'B', 'A', 'B', 'A')]
         public void WheelShouldSignalReverse(string alphabet, string wiring, char wheelSetting, char ringSetting, char inputLetter, char expectedLetter)
         {
             //Build the Wheel
-            var rotor = new Rotor("Test", alphabet, wiring, "", alphabet.IndexOf(ringSetting), alphabet.IndexOf(wheelSetting));
+            var rotor = new Rotor("Test", alphabet, wiring, Array.Empty<int>(), alphabet.IndexOf(ringSetting), alphabet.IndexOf(wheelSetting));
 
             //Send a signal through the wheel
             var outputIndex =  rotor.SignalReverse(alphabet.IndexOf(inputLetter));
@@ -48,7 +41,7 @@
         [InlineData("ABCD", 'D', 'A')]
         public void AdvanceShouldWork(string alphabet, char wheelSetting, char expectedWheelPosition)
         {
-            var wheel = new Rotor("Test", alphabet, alphabet, "", 0, alphabet.IndexOf(wheelSetting));
+            var wheel = new Rotor("Test", alphabet, alphabet, Array.Empty<int>(), 0, alphabet.IndexOf(wheelSetting));
 
             wheel.Advance();
             wheel.PositionIndex.ShouldBe(alphabet.IndexOf(expectedWheelPosition));           

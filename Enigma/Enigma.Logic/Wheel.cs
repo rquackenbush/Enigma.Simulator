@@ -18,11 +18,11 @@
 
         public override string Name { get; }
 
-        public override int SignalForward(int n)
+        public override int SignalForward(int index)
         {
-            var effectivePosition = (this.PositionIndex - RingSettingIndex).Mod(alphabet.Length);
+            var effectivePosition = (PositionIndex - RingSettingIndex).Mod(alphabet.Length);
 
-            var pin = (n + effectivePosition).Mod(alphabet.Length);
+            var pin = (index + effectivePosition).Mod(alphabet.Length);
 
             var contact = forwardMap[pin];
 
@@ -31,11 +31,11 @@
             return result;
         }
 
-        public override int SignalReverse(int n)
+        public override int SignalReverse(int index)
         {
-            var effectivePosition = (this.PositionIndex - RingSettingIndex).Mod(alphabet.Length);
+            var effectivePosition = (PositionIndex - RingSettingIndex).Mod(alphabet.Length);
 
-            var contact = (n + effectivePosition).Mod(alphabet.Length);
+            var contact = (index + effectivePosition).Mod(alphabet.Length);
 
             var pin = reverseMap[contact];
 

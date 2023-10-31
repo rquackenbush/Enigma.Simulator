@@ -86,8 +86,7 @@ namespace Enigma.Logic.Tests
                 RingSettings = new NumbersOrLetters(new [] { 26, 17, 16, 13 })
             };
 
-            //messagekey: jeza
-            Crypt(KnownMachines.RailwayK, machineconfiguration, encryptedMessage, decryptedMessage);
+            Crypt(KnownMachines.K, machineconfiguration, encryptedMessage, decryptedMessage);
         }
 
         [Theory]
@@ -100,7 +99,7 @@ namespace Enigma.Logic.Tests
                 WheelOrder = new string[] { "I", "II", "III" },
                 RingSettings = new NumbersOrLetters(new int[] { 1, 1, 1 }),
                 InitialWheelPositions = new NumbersOrLetters("AAA"),
-                ReflectorName = "UKW-A"
+                ReflectorName = "UKW-B"
             };
 
             Crypt(KnownMachines.M3, configuration, input, expected);
@@ -128,10 +127,16 @@ namespace Enigma.Logic.Tests
         [InlineData("A", "AAZ", "U")]
         [InlineData("A", "AAA", "B")]
         [InlineData("A", "AAB", "D")]
-
         [InlineData("TESTING", "AAZ", "FFXHQCZ")]
-        public void M3(string input, string initialWheelPositions, string expected)
+        [InlineData("THISI SANAM AZING MESSA GEFOO L", "AAZ", "FIOPQ BWRXO TYXTZ ANUNP DYCHA G")]
+        [InlineData("THISI SANAM AZING MESSA GEFOO L", "AAZ", "DYMPV BYHGO PIJTZ LIUTM KXCHL F", "TN IY DK QE AL")]
+        [InlineData("THISI SANAM AZING MESSA GEFOO L", "AAZ", "VTMWU EGEPO OEOEJ NQPZD EBZND E", null, "HBC")]
+
+        [InlineData("TANYA", "ABZ", "BEDQB", null, "RAZ", "III|II|IV")]
+        public void M3(string input, string initialWheelPositions, string expected, string? plugboard = null, string ringSettings = "AAA", string wheelOrder = "I|II|III")
         {
+            var parsedWheelOrder = wheelOrder.Split("|");
+
             // https://www.101computing.net/enigma-machine-emulator/   - shows steps
             // https://cryptii.com/pipes/enigma-machine                - slick interface but doesn't show steps
 
@@ -139,11 +144,11 @@ namespace Enigma.Logic.Tests
             var configuration = new MachineConfiguration
             {
                 //InputName = "ETW",
-                WheelOrder = new string[] { "I", "II", "III" },
-                RingSettings = new NumbersOrLetters(new int[] { 1, 1, 1 }),
+                WheelOrder = parsedWheelOrder,
+                RingSettings = new NumbersOrLetters(ringSettings),
                 InitialWheelPositions = new NumbersOrLetters(initialWheelPositions),
                 ReflectorName = "UKW-B",
-                //Plugboard = ""
+                Plugboard = plugboard
             };
 
             Crypt(KnownMachines.M3, configuration, input, expected);

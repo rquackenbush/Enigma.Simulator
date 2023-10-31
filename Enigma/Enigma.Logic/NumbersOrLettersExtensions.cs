@@ -2,7 +2,7 @@
 {
     public static class NumbersOrLettersExtensions
     {
-        public static int[] ToInidicies(this NumbersOrLetters numberOrLetters, string alphabet)
+        public static int[] ToInidicies(this NumbersOrLetters numberOrLetters, string alphabet, int offset = 0)
         {
             if (numberOrLetters is null) throw new ArgumentNullException(nameof(numberOrLetters));
             if (alphabet is null) throw new ArgumentNullException(nameof(alphabet));
@@ -37,6 +37,14 @@
             }
             else
                 throw new InvalidOperationException("Please specify either Numbers or Letters.");
+
+            if (offset > 0)
+            {
+                for(int i = 0; i < indicies.Length; i++)
+                {
+                    indicies[i] = (indicies[i] + offset).Mod(alphabet.Length);
+                }
+            }
 
             return indicies;
         }

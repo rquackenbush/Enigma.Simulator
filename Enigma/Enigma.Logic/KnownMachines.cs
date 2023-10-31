@@ -103,13 +103,13 @@ namespace Enigma.Logic
                 },
                 Rotors = new RotorDefinition[]
                 {
-                    new ("I", "LPGSZMHAEOQKVXRFYBUTNICJDW", "G"),
-                    new ("II", "SLVGBTFXJQOHEWIRZYAMKPCNDU", "M"),
-                    new ("III", "CJGDPSHKTURAWZXFMYNQOBVLIE", "V"),
+                    new ("I", "JGDQOXUSCAMIFRVTPNEWKBLZYH", "V"),
+                    new ("II", "NTZPSFBOKMWRCJDIVLAEYUXHGQ", "M"),
+                    new ("III", "JVIUBHTCDYAKEQZPOSGXNRMWFL", "G"),
                 },
                 Reflectors = new ReflectorDefinition[]
                 {
-                    new ("UKW", "IMETCGFRAYSQBZXWLHKDVUPOJN", false)
+                    new ("UKW", "QYHOGNECVPUZTFDJAXWMKISRBL", false)
                 },
                 SlotCount = 3,
                 HasPlugBoard = false
