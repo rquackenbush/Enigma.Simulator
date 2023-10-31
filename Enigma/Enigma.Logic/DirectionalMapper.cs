@@ -2,26 +2,26 @@
 {
     public class DirectionalMapper
     {
-        public DirectionalMapper(IConnectionMapper source, Direction direction) 
+        public DirectionalMapper(CrossConnector source, Direction direction) 
         {
             Source = source;
             Direction = direction;
         }
 
-        public IConnectionMapper Source { get; }
+        public CrossConnector Source { get; }
 
         public Direction Direction { get; }
 
-        public char Map(char inputLetter)
+        public int Map(int inputIndex)
         {
             switch (Direction)
             {
                 case Direction.In:
                 case Direction.Reflect:
-                    return Source.MapForward(inputLetter);
+                    return Source.SignalForward(inputIndex);
 
                 case Direction.Out:
-                    return Source.MapReverse(inputLetter);
+                    return Source.SignalReverse(inputIndex);
 
                 default:
                     throw new InvalidOperationException($"Unknown direction '{Direction}'");

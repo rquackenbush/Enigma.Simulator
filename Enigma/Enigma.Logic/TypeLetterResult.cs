@@ -1,6 +1,6 @@
 ﻿namespace Enigma.Logic
 {
-    public record class TypeLetterResult(Machine Machine, char InputLetter, char OutputLetter, InnerOperation[] Operations)
+    public record class TypeLetterResult(Machine Machine, int InputIndex, int OutputIndex, InnerOperation[] Operations)
     {       
     }
 }

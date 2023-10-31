@@ -2,13 +2,10 @@
 {
     public static class NumbersOrLettersExtensions
     {
-        public static int[] ToInidicies(this NumbersOrLetters numberOrLetters, Alphabet alphabet)
+        public static int[] ToInidicies(this NumbersOrLetters numberOrLetters, string alphabet)
         {
             if (numberOrLetters is null) throw new ArgumentNullException(nameof(numberOrLetters));
             if (alphabet is null) throw new ArgumentNullException(nameof(alphabet));
-
-            if (numberOrLetters.Numbers == null && string.IsNullOrWhiteSpace(numberOrLetters.Letters))
-                throw new InvalidOperationException("Please specify either NUmbers or Letters.");
 
             if (numberOrLetters.Numbers != null && !string.IsNullOrWhiteSpace(numberOrLetters.Letters))
                 throw new InvalidOperationException("Please specify ONLY Numbers or Letters.");
@@ -23,13 +20,13 @@
                 {
                     var number = numberOrLetters.Numbers[i];
 
-                    if (number > alphabet.Count)
-                        throw new InvalidOperationException($"Number {number} does not represent a letter in the alphabet which has {alphabet.Count} characters.");
+                    if (number > alphabet.Length)
+                        throw new InvalidOperationException($"Number {number} does not represent a letter in the alphabet which has {alphabet.Length} characters.");
 
                     indicies[i] = number - 1;
                 }
             }
-            else
+            else if (numberOrLetters.Letters != null)
             {
                 indicies = new int[numberOrLetters.Letters.Length];
 
@@ -38,6 +35,8 @@
                     indicies[i] = alphabet.IndexOf(numberOrLetters.Letters[i]);
                 }
             }
+            else
+                throw new InvalidOperationException("Please specify either Numbers or Letters.");
 
             return indicies;
         }

@@ -32,11 +32,13 @@ namespace Enigma.Logic.Tests
                 {
                     var result = machine.TypeLetter(inputLetter);
 
-                    decryptedMessage.Append(result.OutputLetter);
+                    var outputLetter = machineDefnition.Alphabet[result.OutputIndex];
 
-                    this.output.WriteLine(machine.ToTable($"{inputLetter} -> {result.OutputLetter}" ));
+                    decryptedMessage.Append(outputLetter);
 
-                    this.output.WriteLine(result.ToTable());
+                    this.output.WriteLine(machine.ToTable($"{inputLetter} -> {outputLetter}" ));
+
+                    this.output.WriteLine(result.ToTable(machineDefnition.Alphabet));
                 }
 
                 decryptedMessage.ToString().ShouldBe(output);
@@ -126,6 +128,8 @@ namespace Enigma.Logic.Tests
         [InlineData("A", "AAZ", "U")]
         [InlineData("A", "AAA", "B")]
         [InlineData("A", "AAB", "D")]
+
+        [InlineData("TESTING", "AAZ", "FFXHQCZ")]
         public void M3(string input, string initialWheelPositions, string expected)
         {
             // https://www.101computing.net/enigma-machine-emulator/   - shows steps

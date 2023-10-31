@@ -5,11 +5,11 @@
         public InputDefinition(string name, string connections)
         {
             Name = name;
-            Connections = connections;
+            Wiring = connections;
         }
 
         public string Name { get; set; }
 
-        public string Connections { get; set; }
+        public string Wiring { get; set; }
     }
 }

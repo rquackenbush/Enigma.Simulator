@@ -7,31 +7,33 @@
         [InlineData("ABCDEFGHIJK")]
         public void EmptyPlugboardShouldWork(string alphabet)
         {
-            var builtAlphabet = EnigmaBuilder.BuildAlphabet(alphabet);
-
-            var plugboard = EnigmaBuilder.BuildPlugboard(builtAlphabet, "");
+            var plugboard = EnigmaBuilder.BuildPlugboard(alphabet, "");
 
             plugboard.ShouldNotBeNull();
 
-            foreach(var letter in alphabet)
+            for(int index = 0; index < alphabet.Length; index++)
             {
-                plugboard.MapForward(letter).ShouldBe(letter);
-                plugboard.MapReverse(letter).ShouldBe(letter);
+                plugboard.SignalForward(index).ShouldBe(index);
+                plugboard.SignalReverse(index).ShouldBe(index);
             }
         }
 
         [Theory]
         [InlineData("ABCD", "AB", 'A', 'B')]
         [InlineData("ABCD", "AB", 'C', 'C')]
-        public void ConfguredPlugboardShouldMapForward(string alphabet, string connections, char inputLetter, char expectedOutputLetter)
+        public void ConfguredPlugboardShouldMapForward(string alphabet, string wiring, char inputLetter, char expectedOutputLetter)
         {
-            var builtAlphabet = EnigmaBuilder.BuildAlphabet(alphabet);
-
-            var plugboard = EnigmaBuilder.BuildPlugboard(builtAlphabet, connections);
+            var plugboard = EnigmaBuilder.BuildPlugboard(alphabet, wiring);
 
             plugboard.ShouldNotBeNull();
 
-            plugboard.MapForward(inputLetter).ShouldBe(expectedOutputLetter);
+            var inputLetterIndex = alphabet.IndexOf(inputLetter);
+
+            inputLetterIndex.ShouldBeGreaterThanOrEqualTo(0);
+
+            var expectedOutputLetterIndex = alphabet.IndexOf(expectedOutputLetter);
+
+            plugboard.SignalForward(inputLetterIndex).ShouldBe(expectedOutputLetterIndex);
 
         }
     }

@@ -1,9 +1,9 @@
 ﻿namespace Enigma.Logic
 {
-    public class InputWheel : WheelBase, IConnectionMapper
+    public class InputWheel : Wheel
     {
-        public InputWheel(Alphabet alphabet, string name, RotorCore core) 
-            : base(alphabet, name, core, 0, 0)
+        public InputWheel(string name, string alphabet, string wiring) 
+            : base(name, alphabet, wiring, 0, 0)
         {
         }
     }

@@ -5,13 +5,13 @@
         public RotorDefinition(string name, string connections, string notches)
         {
             Name = name;
-            Connections = connections;
+            Wiring = connections;
             Notches = notches;
         }
 
         public string Name { get; set; }
 
-        public string Connections { get; set; }
+        public string Wiring { get; set; }
 
         public string Notches { get; set; }
     }

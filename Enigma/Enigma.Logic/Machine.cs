@@ -6,10 +6,11 @@ namespace Enigma.Logic
     {
         private readonly DirectionalMapper[] mappers;
 
-        public Machine(string name, Alphabet alphabet, InputWheel? input, RotorWheel[] rotors, Reflector reflector, Plugboard? plugboard)
+        public Machine(string name, string alphabet, InputWheel? input, Rotor[] rotors, Reflector reflector, Plugboard? plugboard)
         {
             Name = name;
-            Alphabet = alphabet ?? throw new ArgumentNullException(nameof(alphabet));
+            EnigmaValidator.ValidateAlphabet(alphabet);
+            Alphabet = alphabet; ;
             Input = input;
             Rotors = rotors ?? throw new ArgumentNullException(nameof(rotors));
             Reflector = reflector ?? throw new ArgumentNullException(nameof(reflector));
@@ -36,8 +37,8 @@ namespace Enigma.Logic
                 temp.Add(new DirectionalMapper(rotor, Direction.In));
             }
 
-            if (reflector != null) 
-                temp.Add(new DirectionalMapper(reflector.Core, Direction.Reflect));
+            //Reflector
+            temp.Add(new DirectionalMapper(reflector, Direction.Reflect));
             
             foreach (var rotor in rotors)
             {
@@ -55,18 +56,20 @@ namespace Enigma.Logic
 
         public string Name { get; }
 
-        public Alphabet Alphabet { get; }
+        public string Alphabet { get; }
 
-        public InputWheel? Input { get; }
+        public Wheel? Input { get; }
 
-        public RotorWheel[] Rotors { get; }
+        public Rotor[] Rotors { get; }
 
-        public Reflector Reflector { get; }
+        public Wheel Reflector { get; }
 
         public Plugboard? Plugboard { get; }
 
         public TypeLetterResult TypeLetter(char inputLetter)
         {
+            var inputIndex = Alphabet.IndexOf(inputLetter);
+
             var operations = new List<InnerOperation>(mappers.Length );
 
             //Move wheels (the wheel on the right always moves)
@@ -82,18 +85,18 @@ namespace Enigma.Logic
                     break;
             }
 
-            var currentLetter = inputLetter;
+            var currentIndex = inputIndex;
 
             foreach(var mapper in mappers)
             {
-                var currentLetterBefore = currentLetter;
+                var beforeIndex = currentIndex;
 
-                currentLetter = mapper.Map(currentLetter);
+                currentIndex = mapper.Map(currentIndex);
 
-                operations.Add(new InnerOperation(mapper.Source.Name, currentLetterBefore, currentLetter, mapper.Direction));
+                operations.Add(new InnerOperation(mapper.Source.Name, beforeIndex, currentIndex, mapper.Direction));
             }
 
-            return new TypeLetterResult(this, inputLetter, currentLetter, operations.ToArray());     
+            return new TypeLetterResult(this, inputIndex, currentIndex, operations.ToArray());     
         }
     }
 }

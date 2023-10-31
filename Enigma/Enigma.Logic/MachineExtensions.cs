@@ -10,28 +10,12 @@ namespace Enigma.Logic
 
             foreach(var inputChar in message)
             {
-                response.Append(machine.TypeLetter(inputChar).OutputLetter);
+                var result = machine.TypeLetter(inputChar);
+
+                response.Append(machine.Alphabet[result.OutputIndex]);
             }
 
             return response.ToString();
-        }
-
-        /// <summary>
-        /// Converts an array of 1 based letter numbers to the actual letters.
-        /// </summary>
-        /// <param name="alphabet"></param>
-        /// <param name="letterNumbers">An array of 1 based indicies of the letters.</param>
-        /// <returns></returns>
-        public static string FromOneBased(this Alphabet alphabet, int[] letterNumbers)
-        {
-            var letters = "";
-
-            foreach(var letterNumber in letterNumbers)
-            {
-                letters += alphabet[letterNumber - 1].Letter;
-            }
-
-            return letters;
         }
     }
 }

@@ -2,57 +2,42 @@
 
 namespace Enigma.Logic
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public abstract class CrossConnector : IConnectionMapper
+    public abstract class CrossConnector
     {
-        private readonly ImmutableDictionary<char, char> forward;
-        private readonly ImmutableDictionary<char, char> reverse;
+        protected readonly string alphabet;
+        protected readonly ImmutableArray<int> forwardMap;
+        protected readonly ImmutableArray<int> reverseMap;
 
-        public CrossConnector(CrossConnection[] connections, bool allowSelfConnection)
+        public CrossConnector(string alphabet, string wiring)
         {
-            if (connections is null) 
-                throw new ArgumentNullException(nameof(connections));
+            this.alphabet = alphabet;
+            Wiring = wiring;
 
-            if (connections.Length == 0)
-                throw new ArgumentException("At least one connection is required.");
+            EnigmaValidator.ValidateWiring(alphabet, wiring);
 
-            if (!allowSelfConnection)
-            {
-                foreach (var connection in connections)
-                {
-                    if (connection.InputLetter == connection.OutputLetter)
-                        throw new ArgumentException($"A rotor core connection can not be connected to itself: {connection.InputLetter}");
-                }
-            }
+            forwardMap = wiring
+              .Select(c => alphabet.IndexOf(c))
+              .ToImmutableArray();
 
-            //Sort the forward connections
-            var forwardConnections = connections
-                .OrderBy(c => c.InputLetter)
-                .ToArray();
-
-            //Sort the reverse connections
-            var reverseConnections = connections
-                .OrderBy(c => c.OutputLetter)
-                .ToArray();
-
-            forward = connections.ToImmutableDictionary(c => c.InputLetter, c => c.OutputLetter);
-            reverse = connections.ToImmutableDictionary(c => c.OutputLetter, c => c.InputLetter);
+            reverseMap = forwardMap
+                .Select((item, index) => new { Index = index, Value = item })
+                .OrderBy(c => c.Value)
+                .Select(c => c.Index)
+                .ToImmutableArray();
         }
 
         public abstract string Name { get; }
 
-        public char MapForward(char inputLetter)
+        public string Wiring { get; }
+
+        public virtual int SignalForward(int n)
         {
-            return forward[inputLetter];
+            return forwardMap[n];
         }
 
-        public char MapReverse(char outputLetter)
+        public virtual int SignalReverse(int n)
         {
-            return reverse[outputLetter];
+            return reverseMap[n];
         }
-
-        public int Count => forward.Count;
     }
 }

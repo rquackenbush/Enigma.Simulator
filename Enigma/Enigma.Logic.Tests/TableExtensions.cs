@@ -106,9 +106,12 @@ namespace Enigma.Logic.Tests
             return table.ToString();
         }
 
-        public static string ToTable(this TypeLetterResult result)
+        public static string ToTable(this TypeLetterResult result, string alphabet)
         {
-            var table = new AsciiTableGenerator($"{result.InputLetter} --> {result.OutputLetter}");
+            var inputLetter = alphabet[result.InputIndex];
+            var outputLetter = alphabet[result.OutputIndex];
+
+            var table = new AsciiTableGenerator($"{inputLetter} --> {outputLetter}");
 
             var captions = new List<string>
             {
@@ -124,17 +127,17 @@ namespace Enigma.Logic.Tests
             {
                 table.Add(
                     operation.Name,
-                    result.Machine.Alphabet[operation.InputIndex].Letter,
-                    result.Machine.Alphabet[operation.OutputIndex].Letter,
+                    alphabet[operation.InputIndex],
+                    alphabet[operation.OutputIndex],
                     operation.Direction);
             }
 
             return table.ToString();
         }
 
-        public static string GetWheelPositionString(this Alphabet alphabet, int positionIndex)
+        public static string GetWheelPositionString(this string alphabet, int positionIndex)
         {
-            return $"{positionIndex + 1:00} - {alphabet[positionIndex].Letter}";
+            return $"{positionIndex + 1:00} - {alphabet[positionIndex]}";
         }
     }
 }

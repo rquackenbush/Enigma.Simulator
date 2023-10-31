@@ -2,8 +2,8 @@
 {
     public class Plugboard : CrossConnector
     {
-        public Plugboard(CrossConnection[] connections) 
-            : base(connections, true)
+        public Plugboard(string alphabet, string wiring) 
+            : base(alphabet, wiring)
         {
         }
 

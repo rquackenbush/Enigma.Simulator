@@ -1,15 +1,15 @@
 ﻿namespace Enigma.Logic
 {
-    public class Reflector : WheelBase
+    public class Reflector : Wheel
     {
-        public Reflector(Alphabet alphabet, string name, RotorCore core, int ringSettingIndex, int initialWheelPositionIndex) 
-            : base(alphabet, name, core, ringSettingIndex, initialWheelPositionIndex)
+        public Reflector(string name, string alphabet, string wiring, int ringSettingIndex, int initialPositionIndex) 
+            : base(name, alphabet, wiring, ringSettingIndex, initialPositionIndex)
         {
         }
 
-        public override char MapReverse(char outputLetter)
+        public override int SignalReverse(int n)
         {
-            throw new NotSupportedException("Reflectors can't perform a " + nameof(MapReverse) + " operation.");
+            throw new NotSupportedException("Reflectors can't SignalReverse.");
         }
     }
 }
