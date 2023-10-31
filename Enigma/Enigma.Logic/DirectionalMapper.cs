@@ -1,8 +1,8 @@
 ﻿namespace Enigma.Logic
 {
-    public class EffectiveMapper
+    public class DirectionalMapper
     {
-        public EffectiveMapper(IConnectionMapper source, Direction direction) 
+        public DirectionalMapper(IConnectionMapper source, Direction direction) 
         {
             Source = source;
             Direction = direction;
@@ -12,16 +12,16 @@
 
         public Direction Direction { get; }
 
-        public int Map(int inputIndex)
+        public char Map(char inputLetter)
         {
-            switch(Direction)
+            switch (Direction)
             {
                 case Direction.In:
                 case Direction.Reflect:
-                    return Source.MapForward(inputIndex);
+                    return Source.MapForward(inputLetter);
 
                 case Direction.Out:
-                    return Source.MapReverse(inputIndex);
+                    return Source.MapReverse(inputLetter);
 
                 default:
                     throw new InvalidOperationException($"Unknown direction '{Direction}'");

@@ -123,8 +123,10 @@ namespace Enigma.Logic.Tests
         }
 
         [Theory]
-        [InlineData("A", "B")]
-        public void M3(string input, string expected)
+        [InlineData("A", "AAZ", "U")]
+        [InlineData("A", "AAA", "B")]
+        [InlineData("A", "AAB", "D")]
+        public void M3(string input, string initialWheelPositions, string expected)
         {
             // https://www.101computing.net/enigma-machine-emulator/   - shows steps
             // https://cryptii.com/pipes/enigma-machine                - slick interface but doesn't show steps
@@ -135,7 +137,7 @@ namespace Enigma.Logic.Tests
                 //InputName = "ETW",
                 WheelOrder = new string[] { "I", "II", "III" },
                 RingSettings = new NumbersOrLetters(new int[] { 1, 1, 1 }),
-                InitialWheelPositions = new NumbersOrLetters("AAA"),
+                InitialWheelPositions = new NumbersOrLetters(initialWheelPositions),
                 ReflectorName = "UKW-B",
                 //Plugboard = ""
             };

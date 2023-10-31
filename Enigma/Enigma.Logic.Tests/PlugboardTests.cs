@@ -11,10 +11,12 @@
 
             var plugboard = EnigmaBuilder.BuildPlugboard(builtAlphabet, "");
 
-            for(var index = 0; index < builtAlphabet.Count; index++)
+            plugboard.ShouldNotBeNull();
+
+            foreach(var letter in alphabet)
             {
-                plugboard.MapForward(index).ShouldBe(index);
-                plugboard.MapReverse(index).ShouldBe(index);
+                plugboard.MapForward(letter).ShouldBe(letter);
+                plugboard.MapReverse(letter).ShouldBe(letter);
             }
         }
 
@@ -27,7 +29,9 @@
 
             var plugboard = EnigmaBuilder.BuildPlugboard(builtAlphabet, connections);
 
-            plugboard.MapForward(alphabet.IndexOf(inputLetter)).ShouldBe(alphabet.IndexOf(expectedOutputLetter));
+            plugboard.ShouldNotBeNull();
+
+            plugboard.MapForward(inputLetter).ShouldBe(expectedOutputLetter);
 
         }
     }

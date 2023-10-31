@@ -1,6 +1,6 @@
 ﻿namespace Enigma.Logic
 {
-    public record class CrossConnection(int InputIndex, int OutputIndex)
+    public record class CrossConnection(char InputLetter, char OutputLetter)
     {
     }
 }

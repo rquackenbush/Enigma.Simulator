@@ -21,5 +21,22 @@ namespace Enigma.Logic.Tests
 
             alphabet.IndexOf(letter).ShouldBe(expectedIndex);
         }
+
+        [Theory]
+        [InlineData("abcdef", 2, 'c')]
+        public void LetterByIndex(string letters, int index, char expectedVelue)
+        {
+            var alaphbet = EnigmaBuilder.BuildAlphabet(letters);
+
+            alaphbet[index].Letter.ShouldBe(expectedVelue);
+        }
+
+        [Fact]
+        public void LetterByIndex2()
+        {
+            var alphabet = EnigmaBuilder.BuildAlphabet("ABCD");
+
+            alphabet[1].Letter.ShouldBe('B');
+        }
     }
 }

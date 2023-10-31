@@ -6,7 +6,8 @@
         [InlineData("ABCD", "DCBA", 'A', 'A', 'A', 'D')]
         [InlineData("ABCD", "DCBA", 'A', 'B', 'A', 'C')]
         [InlineData("ABCD", "DCBA", 'A', 'A', 'B', 'C')]
-        public void WheelTestShouldBe(string alphabet, string connections, char wheelSetting, char ringSetting, char inputChar, char expectedOutputLetter)
+        [InlineData("ABCD", "ABCD", 'B', 'A', 'A', 'B')]
+        public void WheelShouldMapForward(string alphabet, string connections, char wheelSetting, char ringSetting, char inputLetter, char expectedLetter)
         {
             //Build the alphabet
             var builtAlphabet = EnigmaBuilder.BuildAlphabet(alphabet);
@@ -15,17 +16,56 @@
             var rotorCore = EnigmaBuilder.BuildRotorCore("Foo", builtAlphabet, connections);
 
             //Get the offsets
-            var ringSettingIndex = alphabet.IndexOf(ringSetting);
-            var initialPositionIndex = alphabet.IndexOf(wheelSetting);
+            var ringSettingIndex = builtAlphabet.IndexOf(ringSetting);
+            var initialPositionIndex = builtAlphabet.IndexOf(wheelSetting);
 
             //Build the wheel
-            var wheel = new RotorWheel("", rotorCore, ringSettingIndex, initialPositionIndex, new int[] { 0 });
+            var wheel = new RotorWheel(builtAlphabet, "", rotorCore, ringSettingIndex, initialPositionIndex, new int[] { });
 
             //Send a signal through the wheel
-            var outputIndex = wheel.MapForward(alphabet.IndexOf(inputChar));
+            wheel.MapForward(inputLetter).ShouldBe(expectedLetter);
+        }
 
-            //Make sure it connected to what we thought it should connect to.
-            alphabet[outputIndex].ShouldBe(expectedOutputLetter);
+        [Theory]
+        [InlineData("ABCD", "DCBA", 'A', 'A', 'D', 'A')]
+        [InlineData("ABCD", "DCBA", 'A', 'B', 'D', 'D')]
+        //[InlineData("ABCD", "DCBA", 'A', 'A', 'B', 'C')]
+        //[InlineData("ABCD", "ABCD", 'B', 'A', 'B', 'A')]
+        public void WheelShouldMapReverse(string alphabet, string connections, char wheelSetting, char ringSetting, char inputLetter, char expectedOutputLetter)
+        {
+            //Build the alphabet
+            var builtAlphabet = EnigmaBuilder.BuildAlphabet(alphabet);
+
+            //Build the rotorcore
+            var rotorCore = EnigmaBuilder.BuildRotorCore("Foo", builtAlphabet, connections);
+
+            //Get the offsets
+            var ringSettingIndex = builtAlphabet.IndexOf(ringSetting);
+            var initialPositionIndex = builtAlphabet.IndexOf(wheelSetting);
+
+            //Build the wheel
+            var wheel = new RotorWheel(builtAlphabet, "", rotorCore, ringSettingIndex, initialPositionIndex, new int[] { });
+
+            //Send a signal through the wheel
+            wheel.MapReverse(inputLetter).ShouldBe(expectedOutputLetter);
+        }
+
+        [Theory]
+        [InlineData("ABCD", 'A', 'B')]
+        [InlineData("ABCD", 'D', 'A')]
+        public void AdvanceShouldWork(string alphabet, char wheelSetting, char expectedWheelPosition)
+        {
+           var builtAlphabet = EnigmaBuilder.BuildAlphabet(alphabet);
+
+            var ringSettingIndex = 0;
+            var initialPositionIndex = builtAlphabet.IndexOf(wheelSetting);
+
+            var rotorCore = EnigmaBuilder.BuildRotorCore("Foo", builtAlphabet, alphabet);
+
+            var wheel = new RotorWheel(builtAlphabet, "", rotorCore, ringSettingIndex, initialPositionIndex, new int[] { });
+
+            wheel.Advance();
+            wheel.PositionIndex.ShouldBe(builtAlphabet[expectedWheelPosition].Index);           
         }
     }
 }

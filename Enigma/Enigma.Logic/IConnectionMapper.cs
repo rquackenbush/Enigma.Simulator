@@ -4,8 +4,8 @@
     {
         string Name { get; }
 
-        int MapForward(int inputIndex);
+        char MapForward(char inputLetter);
 
-        int MapReverse(int outputIndex);
+        char MapReverse(char outputLetter);
     }
 }

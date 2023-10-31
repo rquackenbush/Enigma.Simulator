@@ -7,8 +7,8 @@ namespace Enigma.Logic
     /// </summary>
     public abstract class CrossConnector : IConnectionMapper
     {
-        private readonly ImmutableArray<int> forward;
-        private readonly ImmutableArray<int> reverse;
+        private readonly ImmutableDictionary<char, char> forward;
+        private readonly ImmutableDictionary<char, char> reverse;
 
         public CrossConnector(CrossConnection[] connections, bool allowSelfConnection)
         {
@@ -22,51 +22,37 @@ namespace Enigma.Logic
             {
                 foreach (var connection in connections)
                 {
-                    if (connection.InputIndex == connection.OutputIndex)
-                        throw new ArgumentException($"A rotor core connection can not be connected to itself: {connection.InputIndex}");
+                    if (connection.InputLetter == connection.OutputLetter)
+                        throw new ArgumentException($"A rotor core connection can not be connected to itself: {connection.InputLetter}");
                 }
             }
 
             //Sort the forward connections
             var forwardConnections = connections
-                .OrderBy(c => c.InputIndex)
+                .OrderBy(c => c.InputLetter)
                 .ToArray();
 
             //Sort the reverse connections
             var reverseConnections = connections
-                .OrderBy(c => c.OutputIndex)
+                .OrderBy(c => c.OutputLetter)
                 .ToArray();
 
-            for(int index = 0; index < forwardConnections.Length; index++)
-            {
-                if (forwardConnections[index].InputIndex != index)
-                    throw new ArgumentException($"Invalid InputIndex {forwardConnections[index].InputIndex}");
-
-                if (reverseConnections[index].OutputIndex != index)
-                    throw new ArgumentException($"Invalid OutputIndex {reverseConnections[index].OutputIndex}");
-            }
-
-            forward = ImmutableArray.Create(forwardConnections
-                .Select(c => c.OutputIndex)
-                .ToArray());
-
-            reverse = ImmutableArray.Create(reverseConnections
-                .Select(c => c.InputIndex)
-                .ToArray());
+            forward = connections.ToImmutableDictionary(c => c.InputLetter, c => c.OutputLetter);
+            reverse = connections.ToImmutableDictionary(c => c.OutputLetter, c => c.InputLetter);
         }
 
         public abstract string Name { get; }
 
-        public int MapForward(int inputIndex)
+        public char MapForward(char inputLetter)
         {
-            return forward[inputIndex];
+            return forward[inputLetter];
         }
 
-        public int MapReverse(int outputIndex)
+        public char MapReverse(char outputLetter)
         {
-            return reverse[outputIndex];
+            return reverse[outputLetter];
         }
 
-        public int Count => forward.Length;
+        public int Count => forward.Count;
     }
 }

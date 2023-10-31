@@ -25,11 +25,9 @@ namespace Enigma.Logic
 
             var positionIndex = 0;
 
-            foreach (var connection in connections)
+            foreach (var connectionLetter in connectionLetters)
             {
-                var outputIndex = alphabet.IndexOf(connection);
-
-                var rotorCoreConnection = new CrossConnection(positionIndex, outputIndex);
+                var rotorCoreConnection = new CrossConnection(alphabet[positionIndex].Letter, connectionLetter);
 
                 rotorCoreConnections[positionIndex] = rotorCoreConnection;
 
@@ -56,7 +54,9 @@ namespace Enigma.Logic
             var pairs = connections.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
             //First, create a list of all the "default" connections (where no wire is connected and the plugboard just passed through the letter).
-            var directConnections = Enumerable.Range(0, alphabet.Count).ToHashSet();
+            var directConnections = alphabet
+                .Select(l => l.Letter)
+                .ToHashSet();
 
             var crossConnections = new List<CrossConnection>(alphabet.Count);
 
@@ -74,18 +74,18 @@ namespace Enigma.Logic
                 var sourceLetterIndex = alphabet.IndexOf(sourceLetter);
                 var targetLetterIndex = alphabet.IndexOf(targetLetter);
 
-                if (!directConnections.Contains(sourceLetterIndex))
+                if (!directConnections.Contains(sourceLetter))
                     throw new ApplicationException($"Source letter '{sourceLetter}' has already been connected.");
 
-                if (!directConnections.Contains(targetLetterIndex))
+                if (!directConnections.Contains(targetLetter))
                     throw new ApplicationException($"Target letter '{targetLetterIndex}' has already been connected.");
 
-                crossConnections.Add(new CrossConnection(sourceLetterIndex, targetLetterIndex));
-                crossConnections.Add(new CrossConnection(targetLetterIndex, sourceLetterIndex));
+                crossConnections.Add(new CrossConnection(sourceLetter, targetLetter));
+                crossConnections.Add(new CrossConnection(targetLetter, sourceLetter));
 
                 //These direct connections are no longer valid.
-                directConnections.Remove(sourceLetterIndex);
-                directConnections.Remove(targetLetterIndex);
+                directConnections.Remove(sourceLetter);
+                directConnections.Remove(targetLetter);
             }
 
             foreach(var directionConnection in directConnections)
@@ -145,7 +145,7 @@ namespace Enigma.Logic
                 if (inputDefinition == null)
                     throw new InvalidOperationException($"Unable to find input wheel named '{machineConfiguration.InputName}'.");
 
-                input = new InputWheel(inputDefinition.Name, BuildRotorCore(inputDefinition.Name, alphabet, inputDefinition.Connections));
+                input = new InputWheel(alphabet, inputDefinition.Name, BuildRotorCore(inputDefinition.Name, alphabet, inputDefinition.Connections));
             }
 
             //Get the reflector definition.
@@ -155,7 +155,7 @@ namespace Enigma.Logic
             if (reflectorDefinition == null)
                 throw new InvalidOperationException($"Unable to find reflector wheel named '{machineConfiguration.ReflectorName}'.");
 
-            var reflector = new Reflector(reflectorDefinition.Name, BuildRotorCore(reflectorDefinition.Name, alphabet, reflectorDefinition.Connections), ringSettings[0], wheelPositions[0]);
+            var reflector = new Reflector(alphabet, reflectorDefinition.Name, BuildRotorCore(reflectorDefinition.Name, alphabet, reflectorDefinition.Connections), ringSettings[0], wheelPositions[0]);
 
             var rotors = new RotorWheel[machineDefinition.SlotCount];
 
@@ -178,6 +178,7 @@ namespace Enigma.Logic
                 var notchIndicies = alphabet.GetIndicies(rotorDefinition.Notches);
 
                 rotors[index] = new RotorWheel(
+                    alphabet,
                     rotorDefinition.Name,
                     core,
                     ringSettingIndex, 

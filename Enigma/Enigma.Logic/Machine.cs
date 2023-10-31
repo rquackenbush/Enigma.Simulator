@@ -4,7 +4,7 @@ namespace Enigma.Logic
 {
     public class Machine
     {
-        private readonly EffectiveMapper[] mappers;
+        private readonly DirectionalMapper[] mappers;
 
         public Machine(string name, Alphabet alphabet, InputWheel? input, RotorWheel[] rotors, Reflector reflector, Plugboard? plugboard)
         {
@@ -23,32 +23,32 @@ namespace Enigma.Logic
              <--         <--     <--        <--        <--        <--
            */
 
-            var temp = new List<EffectiveMapper>();
+            var temp = new List<DirectionalMapper>();
 
             if (plugboard != null)
-                temp.Add(new EffectiveMapper(plugboard, Direction.In));
+                temp.Add(new DirectionalMapper(plugboard, Direction.In));
 
             if (input != null)
-                temp.Add(new EffectiveMapper(input, Direction.In));
+                temp.Add(new DirectionalMapper(input, Direction.In));
 
             foreach(var rotor in rotors.Reverse())
             {
-                temp.Add(new EffectiveMapper(rotor, Direction.In));
+                temp.Add(new DirectionalMapper(rotor, Direction.In));
             }
 
             if (reflector != null) 
-                temp.Add(new EffectiveMapper(reflector.Core, Direction.Reflect));
+                temp.Add(new DirectionalMapper(reflector.Core, Direction.Reflect));
             
             foreach (var rotor in rotors)
             {
-                temp.Add(new EffectiveMapper(rotor, Direction.Out));
+                temp.Add(new DirectionalMapper(rotor, Direction.Out));
             }
 
             if (input != null)
-                temp.Add(new EffectiveMapper(input, Direction.Out));
+                temp.Add(new DirectionalMapper(input, Direction.Out));
 
             if (plugboard != null)
-                temp.Add(new EffectiveMapper(plugboard, Direction.Out));
+                temp.Add(new DirectionalMapper(plugboard, Direction.Out));
 
             mappers = temp.ToArray();
         }
@@ -69,7 +69,7 @@ namespace Enigma.Logic
         {
             var operations = new List<InnerOperation>(mappers.Length );
 
-            //Move wheels
+            //Move wheels (the wheel on the right always moves)
             bool advanceNext = true;
 
             for (var rotorIndex = Rotors.Length - 1; rotorIndex >= 0; rotorIndex--)
@@ -82,19 +82,18 @@ namespace Enigma.Logic
                     break;
             }
 
-            //This will carry the current connection index throughout the process.
-            var currentIndex = Alphabet.IndexOf(inputLetter);
+            var currentLetter = inputLetter;
 
             foreach(var mapper in mappers)
             {
-                var currentIndexBefore = currentIndex;
+                var currentLetterBefore = currentLetter;
 
-                currentIndex = mapper.Map(currentIndex);
+                currentLetter = mapper.Map(currentLetter);
 
-                operations.Add(new InnerOperation(mapper.Source.Name, currentIndexBefore, currentIndex, mapper.Direction));
+                operations.Add(new InnerOperation(mapper.Source.Name, currentLetterBefore, currentLetter, mapper.Direction));
             }
 
-            return new TypeLetterResult(this, inputLetter, Alphabet[currentIndex].Letter, operations.ToArray());     
+            return new TypeLetterResult(this, inputLetter, currentLetter, operations.ToArray());     
         }
     }
 }

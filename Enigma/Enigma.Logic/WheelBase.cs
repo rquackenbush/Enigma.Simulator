@@ -4,9 +4,12 @@
     /// Base class for Input Wheels, Reflectors and Rotors.
     /// </summary>
     public abstract class WheelBase
-    { 
-        public WheelBase(string name, RotorCore core, int ringSettingIndex, int initialWheelPositionIndex)
+    {
+        private readonly Alphabet alphabet;
+
+        public WheelBase(Alphabet alphabet, string name, RotorCore core, int ringSettingIndex, int initialWheelPositionIndex)
         {
+            this.alphabet = alphabet;
             Name = name;
             Core = core ?? throw new ArgumentNullException(nameof(core));
             RingSettingIndex = ringSettingIndex;
@@ -21,18 +24,23 @@
 
         public int PositionIndex { get; protected set; }
 
-        public int MapForward(int inputIndex)
+        public char MapForward(char inputLetter)
         {
-            var effectiveCoreIndex = (PositionIndex + RingSettingIndex + inputIndex) % Core.Count;
+            var inputLetterIndex = alphabet.IndexOf(inputLetter);
 
-            return Core.MapForward(effectiveCoreIndex);
+            var letter = Core.
+            
+            return Core.MapForward(coreLetter);
         }
 
-        public virtual int MapReverse(int outputIndex)
+        public virtual char MapReverse(char outputLetter)
         {
-            var effectiveCoreIndex = (PositionIndex + RingSettingIndex + outputIndex) % Core.Count;
 
-            return Core.MapReverse(effectiveCoreIndex);
+            throw new NotImplementedException();
+
+            //var effectiveCoreIndex = (PositionIndex + RingSettingIndex + outputIndex) % Core.Count;
+
+            //return Core.MapReverse(effectiveCoreIndex);
         }
     }
 }

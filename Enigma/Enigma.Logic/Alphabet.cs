@@ -1,11 +1,12 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections;
+using System.Collections.Immutable;
 
 namespace Enigma.Logic
 {
     /// <summary>
     /// The letters which make up an alphabet.
     /// </summary>
-    public class Alphabet
+    public class Alphabet : IEnumerable<AlphabetLetter>
     {
         private readonly ImmutableDictionary<char, AlphabetLetter> letterLookup;
 
@@ -56,5 +57,15 @@ namespace Enigma.Logic
         /// Gets the number of letters in the alphabet.
         /// </summary>
         public int Count => Letters.Length;
+
+        public IEnumerator<AlphabetLetter> GetEnumerator()
+        {
+            return letterLookup.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return letterLookup.Values.GetEnumerator();
+        }
     }
 }
