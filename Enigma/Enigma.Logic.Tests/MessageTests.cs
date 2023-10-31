@@ -123,17 +123,19 @@ namespace Enigma.Logic.Tests
             Crypt(KnownMachines.M3, configuration, input, expected);
         }
 
-        [Theory]
-        [InlineData("A", "AAZ", "U")]
-        [InlineData("A", "AAA", "B")]
-        [InlineData("A", "AAB", "D")]
-        [InlineData("TESTING", "AAZ", "FFXHQCZ")]
-        [InlineData("THISI SANAM AZING MESSA GEFOO L", "AAZ", "FIOPQ BWRXO TYXTZ ANUNP DYCHA G")]
-        [InlineData("THISI SANAM AZING MESSA GEFOO L", "AAZ", "DYMPV BYHGO PIJTZ LIUTM KXCHL F", "TN IY DK QE AL")]
-        [InlineData("THISI SANAM AZING MESSA GEFOO L", "AAZ", "VTMWU EGEPO OEOEJ NQPZD EBZND E", null, "HBC")]
+        //         Input                               Wheel Positions Expected                           Plugboard           Ring Settings Reflector
+        //         ----------------------------------- --------------- ---------------------------------- ------------------- ------------- --------------
 
-        [InlineData("TANYA", "ABZ", "BEDQB", null, "RAZ", "III|II|IV")]
-        public void M3(string input, string initialWheelPositions, string expected, string? plugboard = null, string ringSettings = "AAA", string wheelOrder = "I|II|III")
+        [Theory]
+        [InlineData("A",                               "AAZ",          "U")]
+        [InlineData("A",                               "AAA",          "B")]
+        [InlineData("A",                               "AAB",          "D")]
+        [InlineData("TESTING",                         "AAZ",          "FFXHQCZ")]
+        [InlineData("THISI SANAM AZING MESSA GEFOO L", "AAZ",          "FIOPQ BWRXO TYXTZ ANUNP DYCHA G")]
+        [InlineData("THISI SANAM AZING MESSA GEFOO L", "AAZ",          "DYMPV BYHGO PIJTZ LIUTM KXCHL F", "TN IY DK QE AL")]
+        [InlineData("THISI SANAM AZING MESSA GEFOO L", "AAZ",          "VTMWU EGEPO OEOEJ NQPZD EBZND E", null,              "HBC")]
+        [InlineData("TANYA",                           "ABZ",          "BEDQB",                           null,              "RAZ",         "III|II|IV")]
+        public void M3(string input, string initialWheelPositions, string expected, string? plugboard = null, string ringSettings = "AAA", string wheelOrder = "I|II|III", string reflectorName = "UKW-B")
         {
             var parsedWheelOrder = wheelOrder.Split("|");
 
@@ -147,7 +149,7 @@ namespace Enigma.Logic.Tests
                 WheelOrder = parsedWheelOrder,
                 RingSettings = new NumbersOrLetters(ringSettings),
                 InitialWheelPositions = new NumbersOrLetters(initialWheelPositions),
-                ReflectorName = "UKW-B",
+                ReflectorName = reflectorName,
                 Plugboard = plugboard
             };
 
@@ -188,7 +190,7 @@ namespace Enigma.Logic.Tests
 
             var configuration = new MachineConfiguration
             {
-                InputName = "ETW",
+                //InputName = "ETW",
                 WheelOrder = new string[] { "III", "VI", "VIII" },
                 ReflectorName = "UKW-B",
                 RingSettings = new NumbersOrLetters(new[] { 01, 08, 13 }),
@@ -198,8 +200,6 @@ namespace Enigma.Logic.Tests
 
             Crypt(KnownMachines.M3, configuration, input, expected);
         }
-
-        
     }
 }
 
