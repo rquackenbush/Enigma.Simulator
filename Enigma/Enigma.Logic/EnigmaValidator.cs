@@ -1,7 +1,15 @@
 ﻿namespace Enigma.Logic
 {
+    /// <summary>
+    /// Validates various Enigma aspects.
+    /// </summary>
     public static class EnigmaValidator
     {
+        /// <summary>
+        /// Validates that all letters appear at most once int he specified string.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <exception cref="EnigmaValidationException"></exception>
         private static void ValidateAllLettersAreUnique(this string value)
         {
             var letters = new HashSet<char>();
@@ -13,6 +21,11 @@
             }
         }
 
+        /// <summary>
+        /// Validates that an alphabet is valid.
+        /// </summary>
+        /// <param name="alphabet"></param>
+        /// <exception cref="EnigmaValidationException"></exception>
         public static void ValidateAlphabet(string alphabet)
         {
             if (string.IsNullOrEmpty(alphabet))
@@ -24,6 +37,12 @@
             alphabet.ValidateAllLettersAreUnique();
         }
 
+        /// <summary>
+        /// Validates that every letter in the alphabet has a wiring entry and that no connections are repeated.
+        /// </summary>
+        /// <param name="alphabet"></param>
+        /// <param name="wiring"></param>
+        /// <exception cref="EnigmaValidationException"></exception>
         public static void ValidateWiring(string alphabet, string wiring)
         {
             if (wiring.Length != alphabet.Length)

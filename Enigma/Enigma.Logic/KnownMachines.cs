@@ -2,16 +2,34 @@
 
 namespace Enigma.Logic
 {
+    /// <summary>
+    /// Known Enigma machines and their capabilities.
+    /// </summary>
     public static class KnownMachines
     {
+        /// <summary>
+        /// B
+        /// </summary>
         public static MachineDefinition B => b.Value;
 
+        /// <summary>
+        /// D
+        /// </summary>
         public static MachineDefinition D => d.Value;
 
+        /// <summary>
+        /// I
+        /// </summary>
         public static MachineDefinition I => i.Value;
 
+        /// <summary>
+        /// K
+        /// </summary>
         public static MachineDefinition K => k.Value;
 
+        /// <summary>
+        /// M3
+        /// </summary>
         public static MachineDefinition M3 => m3.Value;
 
         /// <summary>

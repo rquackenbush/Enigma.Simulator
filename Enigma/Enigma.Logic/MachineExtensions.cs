@@ -2,8 +2,17 @@
 
 namespace Enigma.Logic
 {
+    /// <summary>
+    /// Extensions helpful for interacting with <see cref="Machine"/> instances.
+    /// </summary>
     public static class MachineExtensions
     {
+        /// <summary>
+        /// Types a message and returns the crypted result.
+        /// </summary>
+        /// <param name="machine"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static string TypeMessage(this Machine machine, string message)
         {
             var response = new StringBuilder();

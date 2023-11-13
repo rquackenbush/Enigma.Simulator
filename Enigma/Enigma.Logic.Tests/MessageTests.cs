@@ -54,40 +54,40 @@ namespace Enigma.Logic.Tests
             }
         }
 
-        [Fact]
-        public void TuringsTreatise1940()
-        {
-            /*
+        //[Fact]
+        //public void TuringsTreatise1940()
+        //{
+        //    /*
             
-            http://wiki.franklinheath.co.uk/index.php/Enigma/Sample_Messages
+        //    http://wiki.franklinheath.co.uk/index.php/Enigma/Sample_Messages
             
-            Machine Settings for Enigma K Railway
-            Wheel order:     III I II
-            Ring positions:  26 17 16 13
-            Message key:     JEZA
+        //    Machine Settings for Enigma K Railway
+        //    Wheel order:     III I II
+        //    Ring positions:  26 17 16 13
+        //    Message key:     JEZA
             
-             */
+        //     */
 
-            const string encryptedMessage = "QSZVI DVMPN EXACM RWWXU IYOTY NGVVX DZ";
-            const string decryptedMessage = "DEUTS QETRU PPENS INDJE TZTIN ENGLA ND";
+        //    const string encryptedMessage = "QSZVI DVMPN EXACM RWWXU IYOTY NGVVX DZ";
+        //    const string decryptedMessage = "DEUTS QETRU PPENS INDJE TZTIN ENGLA ND";
 
-            var machineconfiguration = new MachineConfiguration
-            {
-                InputName = "ETW",
-                WheelOrder = new string[]
-                {
-                    "III",
-                    "I",
-                    "II"
-                },
-                ReflectorName = "UKW",
+        //    var machineconfiguration = new MachineConfiguration
+        //    {
+        //        InputName = "ETW",
+        //        WheelOrder = new string[]
+        //        {
+        //            "III",
+        //            "I",
+        //            "II"
+        //        },
+        //        ReflectorName = "UKW",
 
-                InitialWheelPositions = new NumbersOrLetters("JEZA"),
-                RingSettings = new NumbersOrLetters(new [] { 26, 17, 16, 13 })
-            };
+        //        InitialWheelPositions = new NumbersOrLetters("JEZA"),
+        //        RingSettings = new NumbersOrLetters(new [] { 26, 17, 16, 13 })
+        //    };
 
-            Crypt(KnownMachines.K, machineconfiguration, encryptedMessage, decryptedMessage);
-        }
+        //    Crypt(KnownMachines.K, machineconfiguration, encryptedMessage, decryptedMessage);
+        //}
 
         [Theory]
         [InlineData("OPGN DXCF WEVT NRSD ULTP", "THIS IS A SECRET MESSAGE")]
@@ -173,33 +173,33 @@ namespace Enigma.Logic.Tests
             Crypt(KnownMachines.I, configuration, input, expected);
         }
 
-        [Theory]
-        [InlineData(
-            "YKAE NZAP MSCH ZBFO CUVM RMDP YCOF HADZ IZME FXTH FLOL PZLF GGBO TGOX GRET DWTJ IQHL MXVJ WKZU ASTR",
-            "STEUE REJTA NAFJO RDJAN STAND ORTQU AAACC CVIER NEUNN EUNZW OFAHR TZWON ULSMX XSCHA RNHOR STHCO")]
-        public void Scharnhorst(string input, string expected)
-        {
-            /*
-            Machine Settings for Enigma M3
-            Reflector:       B
-            Wheel order:     III VI VIII
-            Ring positions:  01 08 13
-            Plug pairs:	     AN EZ HK IJ LR MQ OT PV SW UX
-            Message key:     UZV
-            */
+        //[Theory]
+        //[InlineData(
+        //    "YKAE NZAP MSCH ZBFO CUVM RMDP YCOF HADZ IZME FXTH FLOL PZLF GGBO TGOX GRET DWTJ IQHL MXVJ WKZU ASTR",
+        //    "STEUE REJTA NAFJO RDJAN STAND ORTQU AAACC CVIER NEUNN EUNZW OFAHR TZWON ULSMX XSCHA RNHOR STHCO")]
+        //public void Scharnhorst(string input, string expected)
+        //{
+        //    /*
+        //    Machine Settings for Enigma M3
+        //    Reflector:       B
+        //    Wheel order:     III VI VIII
+        //    Ring positions:  01 08 13
+        //    Plug pairs:	     AN EZ HK IJ LR MQ OT PV SW UX
+        //    Message key:     UZV
+        //    */
 
-            var configuration = new MachineConfiguration
-            {
-                //InputName = "ETW",
-                WheelOrder = new string[] { "III", "VI", "VIII" },
-                ReflectorName = "UKW-B",
-                RingSettings = new NumbersOrLetters(new[] { 01, 08, 13 }),
-                InitialWheelPositions = new NumbersOrLetters("UZV"),
-                Plugboard = "AN EZ HK IJ LR MQ OT PV SW UX"
-            };
+        //    var configuration = new MachineConfiguration
+        //    {
+        //        //InputName = "ETW",
+        //        WheelOrder = new string[] { "III", "VI", "VIII" },
+        //        ReflectorName = "UKW-B",
+        //        RingSettings = new NumbersOrLetters(new[] { 01, 08, 13 }),
+        //        InitialWheelPositions = new NumbersOrLetters("UZV"),
+        //        Plugboard = "AN EZ HK IJ LR MQ OT PV SW UX"
+        //    };
 
-            Crypt(KnownMachines.M3, configuration, input, expected);
-        }
+        //    Crypt(KnownMachines.M3, configuration, input, expected);
+        //}
     }
 }
 

@@ -2,10 +2,23 @@
 
 namespace Enigma.Logic
 {
+    /// <summary>
+    /// An enigma machine.
+    /// </summary>
     public class Machine
     {
         private readonly DirectionalMapper[] mappers;
 
+        /// <summary>
+        /// Creates an instnace of the <see cref="Machine"/> class.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="alphabet"></param>
+        /// <param name="input"></param>
+        /// <param name="rotors"></param>
+        /// <param name="reflector"></param>
+        /// <param name="plugboard"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public Machine(string name, string alphabet, InputWheel? input, Rotor[] rotors, Reflector reflector, Plugboard? plugboard)
         {
             Name = name;
@@ -54,18 +67,41 @@ namespace Enigma.Logic
             mappers = temp.ToArray();
         }
 
+        /// <summary>
+        /// The name of this machine.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// The alphabet used by this machine.
+        /// </summary>
         public string Alphabet { get; }
 
+        /// <summary>
+        /// The input used for this machine.
+        /// </summary>
         public Wheel? Input { get; }
 
+        /// <summary>
+        /// The rotors in this machine.
+        /// </summary>
         public Rotor[] Rotors { get; }
 
+        /// <summary>
+        /// The reflector used in this machine.
+        /// </summary>
         public Wheel Reflector { get; }
 
+        /// <summary>
+        /// The plugboard used by this machine.
+        /// </summary>
         public Plugboard? Plugboard { get; }
 
+        /// <summary>
+        /// Simuates typing a letter.
+        /// </summary>
+        /// <param name="inputLetter"></param>
+        /// <returns></returns>
         public TypeLetterResult TypeLetter(char inputLetter)
         {
             var inputIndex = Alphabet.IndexOf(inputLetter);

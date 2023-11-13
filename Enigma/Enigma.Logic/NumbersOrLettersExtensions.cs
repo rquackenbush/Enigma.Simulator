@@ -1,7 +1,19 @@
 ﻿namespace Enigma.Logic
 {
+    /// <summary>
+    /// Extension methods for the <see cref="NumbersOrLetters"/> class.
+    /// </summary>
     public static class NumbersOrLettersExtensions
     {
+        /// <summary>
+        /// Returns an array o zero based indicides biven the <see cref="NumbersOrLetters"/> instance.
+        /// </summary>
+        /// <param name="numberOrLetters"></param>
+        /// <param name="alphabet"></param>
+        /// <param name="offset"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
         public static int[] ToInidicies(this NumbersOrLetters numberOrLetters, string alphabet, int offset = 0)
         {
             if (numberOrLetters is null) throw new ArgumentNullException(nameof(numberOrLetters));

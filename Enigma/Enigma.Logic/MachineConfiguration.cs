@@ -1,5 +1,8 @@
 ﻿namespace Enigma.Logic
 {
+    /// <summary>
+    /// An Enigma machine configuration.
+    /// </summary>
     public class MachineConfiguration
     {
         /// <summary>

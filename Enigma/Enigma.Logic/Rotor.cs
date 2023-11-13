@@ -2,10 +2,22 @@
 
 namespace Enigma.Logic
 {
+    /// <summary>
+    /// Represents a wheel that is automatically turned (advanced) when a letter is pressed.
+    /// </summary>
     public class Rotor : Wheel
     {
         private readonly ImmutableArray<int> notchIndicies;
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="Rotor"/> class.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="alphabet"></param>
+        /// <param name="wiring"></param>
+        /// <param name="notchIndicies"></param>
+        /// <param name="ringSettingIndex"></param>
+        /// <param name="initialPositionIndex"></param>
         public Rotor(string name, string alphabet, string wiring, int[] notchIndicies, int ringSettingIndex, int initialPositionIndex) 
             : base(name, alphabet, wiring, ringSettingIndex, initialPositionIndex)
         {

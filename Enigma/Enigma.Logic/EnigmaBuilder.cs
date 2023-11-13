@@ -2,6 +2,9 @@
 
 namespace Enigma.Logic
 {
+    /// <summary>
+    /// Methods used to build Enigma objects.
+    /// </summary>
     public static class EnigmaBuilder
     {
         /// <summary>
@@ -45,6 +48,13 @@ namespace Enigma.Logic
             return new Plugboard(alphabet, new string(wiring));
         }
 
+        /// <summary>
+        /// Builds a <see cref="Machine"/> instance from a configuration.
+        /// </summary>
+        /// <param name="machineDefinition"></param>
+        /// <param name="machineConfiguration"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public static Machine BuildMachine(MachineDefinition machineDefinition, MachineConfiguration machineConfiguration)
         {
             var ringSettings = machineConfiguration.RingSettings.ToInidicies(machineDefinition.Alphabet);
