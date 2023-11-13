@@ -1,0 +1,13 @@
+# Known Machines
+The machines that come with the library.
+
+{{ for machine in machines }}
+
+## {{ machine.name }}
+
+| Rotor | {{ machine.alphabet }} | Notch |
+| --- | --- | --- | 
+{{ for rotor in machine.rotors }}| {{ rotor.name }} | {{ rotor.wiring }} | {{ rotor.notches }} | 
+{{ end }}
+  
+{{ end }}

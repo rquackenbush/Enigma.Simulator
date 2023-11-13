@@ -1,4 +1,6 @@
 ﻿using Enigma.Logic.Definitions;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Enigma.Logic
 {
@@ -194,5 +196,25 @@ namespace Enigma.Logic
                 HasPlugBoard = true
             }
         );
+
+        /// <summary>
+        /// Get all Known Machines
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<MachineDefinition> GetAll()
+        {
+            var properties = typeof(KnownMachines).GetProperties(BindingFlags.Public | BindingFlags.Static);
+
+            foreach(var property in properties)
+            {
+                if (property.PropertyType == typeof(MachineDefinition))
+                {
+                    var definition = (MachineDefinition?)property.GetValue(null);
+
+                    if (definition != null)
+                        yield return definition;
+                }
+            }
+        }
     }
 }
