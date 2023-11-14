@@ -1,5 +1,4 @@
 ﻿using Enigma.DocGenerator.Models;
-using Enigma.Logic;
 
 namespace Enigma.DocGenerator.Factories
 {
