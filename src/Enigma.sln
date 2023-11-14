@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enigma", "Enigma\Enigma.csproj", "{C6B71572-C2DE-46B6-9856-0D06ACD46B15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enigma.Simulator", "Enigma.Simulator\Enigma.Simulator.csproj", "{C6B71572-C2DE-46B6-9856-0D06ACD46B15}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enigma.Tests", "Enigma.Tests\Enigma.Tests.csproj", "{86D69CE5-A2C6-44BA-97F4-3A531368A4AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enigma.Simulator.Tests", "Enigma.Simulator.Tests\Enigma.Simulator.Tests.csproj", "{86D69CE5-A2C6-44BA-97F4-3A531368A4AB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enigma.DocGenerator", "Enigma.DocGenerator\Enigma.DocGenerator.csproj", "{7380831F-B86E-4681-BBFB-00F6CE57DC56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enigma.Simulator.DocGenerator", "Enigma.Simulator.DocGenerator\Enigma.Simulator.DocGenerator.csproj", "{7380831F-B86E-4681-BBFB-00F6CE57DC56}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
